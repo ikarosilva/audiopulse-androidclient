@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/main_background2"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+        android:id="@+id/RelativeLayout01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/TextView01"
+            android:layout_height="wrap_content"
+            android:text="Dr. Ikaro Silva"
+            android:textSize="10pt"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:layout_width="wrap_content"
+            android:layout_gravity="fill_horizontal|center"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:shadowColor="#F00"
+            android:textColor="#FFFF0F"></TextView>
+     </RelativeLayout>
+</LinearLayout>
