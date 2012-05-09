@@ -1,0 +1,38 @@
+<Procedure title="TBOAE Hearing Test" author="Sana Team">
+	<Page>
+		<Element type="RADIO" id="age" concept="Age" question="Age (years)"
+		required="true" helpText="Patient's age in years" answer="" choices="less than 45, 45-49, 50-54, 55-59, 60-64, 65-69, 70-74, 75-79, 80-84, over 85" />
+	</Page>
+	<Page>
+		<Element type="RADIO" id="gender" concept="Gender" question="Gender"
+		required="true" helpText="Patient's gender" answer="" choices="male, female" />
+	</Page>
+	<Page>
+		<Element type="RADIO" id="sbp" concept="SYSTOLIC BLOOD PRESSURE" question="Systolic Blood Pressure (mm Hg)"
+		required="true" helpText="Patient's systolic blood pressure" answer="" choices="less than 160, over 160" />
+	</Page>
+	<Page>
+		<Element type="RADIO" id="hypertension" concept="Hypertension" question="Hypertension Treatment"
+		required="true" helpText="Patient's hypertension treatment" answer="" choices="Yes, No" />
+	</Page>
+	<Page>
+		<Element type="RADIO" id="bodymassindex" concept="Body Mass Index" question="Body Mass Index"
+		required="true" helpText="Patient's body mass index (kg/m^2)" answer="" choices="less than 30, more than 30" />
+	</Page>
+	<Page>
+		<Element type="RADIO" id="printerval" concept="PR Interval" question="PR Interval (ms)"
+		required="true" helpText="Patient's PR Interval (milliseconds)" answer="" choices="less than 160, 160-199, over 200" />
+	</Page>
+	<Page>
+		<Element type="RADIO" id="mumurage" concept="Murmur Age" question="Significant murmur by yr of age"
+		required="true" helpText="Patient's significant murmur by years of age" answer="" choices="45-54, 55-64, 65-74, 75-84, over 85" />
+	</Page>
+	<Page>
+		<Element type="RADIO" id="heartfailureage" concept="HeartFailureAge" question="Heart failure by years of age"
+		required="true" helpText="Patient's heart failure by years of age" answer="" choices="45-54, 55-64, 65-74, over 75" />
+	</Page>
+	<Page>
+		<Element type="CAPTURE" concept="risk" id="afib"
+			content-type="application/vnd.sensor.ecg" question="Press Enter to calculate CHD Risk" />
+	</Page>
+</Procedure>
