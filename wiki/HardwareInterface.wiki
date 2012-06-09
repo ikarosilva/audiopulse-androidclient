@@ -6,11 +6,11 @@ This page will be updated with more organized details and diagrams.
 Describe phone input / output, ER10C input/output characteristics
 ==ER10C specifications==
 ===Input===
-1kHz sensitivity: 72 dB SPL <-> 1V RMS
+1kHz sensitivity: 72 dB SPL = 1V RMS
 Output Z = 50 kOhm
 
 ===Output===
-0 dB SPL <-> 0 dBuV
+0 dB SPL = 0 dBuV
 Output Z = 100 Ohm
 
 ==Example phone I/O specifications==
