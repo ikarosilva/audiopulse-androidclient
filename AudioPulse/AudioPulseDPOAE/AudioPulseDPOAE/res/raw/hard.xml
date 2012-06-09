@@ -1,0 +1,34 @@
+<Procedure title="Hard Coronary Heart Disease" author="10 year risk">
+	<Page>
+		<Element type="RADIO" id="age" concept="Age" question="Age (years)"
+		required="true" helpText="Patient's age in years" answer="" choices="30-34, 35-39, 40-44, 45-49, 50-54, 55-59, 60-64, 65-69, 70-74" />
+	</Page>
+	<Page>
+		<Element type="RADIO" id="ldlc" concept="LDLC" question="LDL-C (mg/dl) [mmol/L]"
+		helpText="Patient's LDL-C level" answer="" choices=" less than 100 [less than 2.59], 100-129 [2.6-3.36], 130-159 [3.37-4.14], 160-190 [4.15-4.92], greater than 190 [greater than 4.92]" />
+	</Page>
+	<Page>
+		<Element type="RADIO" id="chol" concept="Cholesterol" question="Cholesterol  (mg/dl) [mmol/L]"
+		helpText="Patient's Cholesterol level" answer="" choices=" less than 160 [less than 4.14], 160-199 [4.15-5.17], 200-239 [5.18-6.21], 240-279 [6.22-7.24], greater than 280 [greater than 7.25]" />
+	</Page>
+	<Page>
+		<Element type="RADIO" id="hdls" concept="HDLC" question="HDL-C (mg/dl) [mmol/L]"
+		required="true" helpText="Patient's HDL-C level" answer="" choices=" less than 35 [less than 0.90], 35-44 [0.91-1.16], 45-49 [1.17-1.29], 50-59 [1.30-1.55], greater than 60 [greater than 1.56]" />
+	</Page>
+	<Page>
+		<Element type="RADIO" id="sbp" concept="SYSTOLIC BLOOD PRESSURE" question="Systolic Blood Pressure (mm Hg)"
+		required="true" helpText="Patient's systolic blood pressure" answer="" choices="less than 120, 120-129, 130-139, 140-159, over 160" />
+	</Page>
+	<Page>
+		<Element type="RADIO" id="dbp" concept="DIASTOLIC BLOOD PRESSURE" question="Diastolic Blood Pressure (mm Hg)"
+		required="true" helpText="Patient's diastolic blood pressure" answer="" choices="less than 80, 81-84, 85-89, 90-99, over 100" />
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="risk" question="Patient Risk Factors"
+			helpText="Enter optional patient's risk factors" answer="" choices="smoker, diabetic" />
+	</Page>
+	<Page>
+		<Element type="CAPTURE" concept="risk" id="ecg"
+			content-type="application/vnd.sensor.ecg" question="Press Enter to calculate CHD Risk" />
+	</Page>
+</Procedure>
