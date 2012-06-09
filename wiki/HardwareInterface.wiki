@@ -1,0 +1,19 @@
+#summary Instructions and notes for hardware interface
+
+= Technical requirements =
+
+Describe phone input / output, ER10C input/output characteristics
+
+= Simple passive interface =
+
+Describe cable with passive components
+
+Describe possible modifications to phone gain arrays, etc. for improved dynamic range
+
+= Passive filter interface =
+
+E.g., notch filter for input stimulus frequencies, allowing more analog gain prior to phone ADC input
+
+= ADC-DAC stage interface =
+
+An ADC stage prior to phone to allow our own specs
