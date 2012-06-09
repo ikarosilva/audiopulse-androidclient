@@ -30,7 +30,7 @@ A simple analog connection can be built using a few commercially-available cable
 
 Use a 1 uF cap for < 100 Hz high-pass cutoff, inserted into microphone path
 
-<a href = "http://www.meelec.com/MEE_TRRS_Adapter_for_P_Version_Headphones_p/adptr-trrs-35.htm">TRRS RS switch adapter</a> (iPhone <-> sensible pin configuration)
+<a href = "http://www.meelec.com/MEE_TRRS_Adapter_for_P_Version_Headphones_p/adptr-trrs-35.htm">TRRS RS switch adapter</a> (iPhone - sensible pin configuration)
 
 <a href="http://www.markertek.com/Cables/Audio-Cables/AV-Dubbing-Cables/Delvcam-Monitor-Systems/DELV-RAAVCAB-6.xhtml?DELV-RAAVCAB-6">TRRS - RCA(f) cable</a>
 This cable uses S-ground configuration, and needs the above adapter to work with most smartphones.
