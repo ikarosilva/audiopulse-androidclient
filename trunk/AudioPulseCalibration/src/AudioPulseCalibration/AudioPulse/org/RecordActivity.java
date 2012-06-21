@@ -1,6 +1,9 @@
 package AudioPulseCalibration.AudioPulse.org;
 
+import AudioPulseCalibration.AudioPulse.org.DeviationRendererDemo02Activity;
+
 import android.app.Activity;
+import android.content.Intent;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.AudioRecord.OnRecordPositionUpdateListener;
@@ -52,7 +55,7 @@ public class RecordActivity extends Activity {
 		Log.v(TAG, "Destroying audio recording...");
 		if(mAudioRecord != null) {
 			mAudioRecord.release();
-            Log.v(TAG, "Released AudioRecord");			
+            Log.v(TAG, "Released recording");			
 		}
 		super.onDestroy();
 	}
@@ -119,9 +122,12 @@ public class RecordActivity extends Activity {
 		    Log.v(TAG, "Got samples: " + samplesRead);
 		}	
 		mAudioRecord.stop();
-		Log.v(TAG, "AudioRecord has stopped recording");
+		Log.v(TAG, "Recording has stopped recording");
 		for (int i=0; i < mAudioBufferSampleSize; i++){
 	    Log.v(TAG, "Sample " + i + " = " + audioBuffer[i]);
 		}
+		Log.v(TAG, "plotting data...");
+		Intent intent = new Intent(this.getApplicationContext(), DeviationRendererDemo02Activity.class);
+        startActivity(intent);
 	}
 }
