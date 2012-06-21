@@ -117,11 +117,11 @@ public class RecordActivity extends Activity {
 		while(inRecordMode) {
 		    int samplesRead = mAudioRecord.read(audioBuffer, 0, mAudioBufferSampleSize);
 		    Log.v(TAG, "Got samples: " + samplesRead);
-		}
+		}	
 		mAudioRecord.stop();
 		Log.v(TAG, "AudioRecord has stopped recording");
-		
-		//Plot the collected data
-		
+		for (int i=0; i < mAudioBufferSampleSize; i++){
+	    Log.v(TAG, "Sample " + i + " = " + audioBuffer[i]);
+		}
 	}
 }
