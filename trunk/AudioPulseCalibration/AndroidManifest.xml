@@ -21,7 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DeviationRendererDemo02Activity"
+        <activity android:name=".PlotWaveformActivity"
             android:label="Waveform Plot"
             android:configChanges="orientation|keyboardHidden">
             <intent-filter>
