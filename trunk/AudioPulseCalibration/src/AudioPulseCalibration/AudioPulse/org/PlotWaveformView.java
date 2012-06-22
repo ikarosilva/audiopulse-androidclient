@@ -40,19 +40,19 @@
  */ 
 package AudioPulseCalibration.AudioPulse.org;
 
+import java.util.Random;
+
 import org.afree.chart.ChartFactory;
 import org.afree.chart.AFreeChart;
 import org.afree.chart.plot.PlotOrientation;
 import org.afree.chart.plot.XYPlot;
-import org.afree.chart.renderer.xy.DeviationRenderer;
 import org.afree.data.xy.XYDataset;
-import org.afree.data.xy.YIntervalSeries;
-import org.afree.data.xy.YIntervalSeriesCollection;
-import org.afree.graphics.SolidColor;
+import org.afree.data.xy.XYSeries;
+import org.afree.data.xy.XYSeriesCollection;
+
 import AudioPulseCalibration.AudioPulse.org.DemoView;
 
 import android.content.Context;
-import android.graphics.Color;
 
 /**
  * DeviationRendererDemo02View
@@ -67,38 +67,35 @@ public class PlotWaveformView extends DemoView {
 		super(context);
 
 		final AFreeChart chart = createChart2();
-
 		setChart(chart);
 	}
 
-	/**
-	 * Creates a sample dataset.
-	 * @return a sample dataset.
-	 */
 	
-    private static YIntervalSeriesCollection createDataset2() {
-    	
-    	
-    	YIntervalSeries series1 = new YIntervalSeries("RE DPOAE");
-    	int[] NUB={-10, -5, -5, -5, -4};
-    	int[] NLB={-15, -10, -13, -15, -13};
-    	
-		series1.add(7.206, -7,NLB[0], NUB[0]);
-		series1.add(5.083, 13.1,NLB[1], NUB[1]);
-		series1.add(3.616, 17.9,NLB[2], NUB[2]);
-		series1.add(2.542, 11.5,NLB[3], NUB[3]);
-		series1.add(1.818, 17.1,NLB[4], NUB[4]);
-		
-		YIntervalSeriesCollection dataset = new YIntervalSeriesCollection();
-		dataset.addSeries(series1);
-		return dataset;
+    private static XYSeriesCollection createDataset2() {	
+    		XYSeriesCollection result = new XYSeriesCollection();
+        	XYSeries series = new XYSeries(1);
+        	XYSeries series2 = new XYSeries(2);
+        	Random generator = new Random();
+        	double output=0;
+        	int N =5000;
+    		int[] a = new int[N];
+    		for(int n=0;n<N;n++){
+    			if(n<3){
+    				a[n]=1;
+    				output=1;
+    			}else{
+    				a[n]=a[a[n-1]]+ a[n-a[n-1]];
+    				output=(double) a[n] - ((double)n)/2;
+    			}
+    			series.add(n, output);
+    			series2.add(n, generator.nextGaussian()-output);
+    		}
+        	
+        	result.addSeries(series);
+        	result.addSeries(series2);
+            return result;
     }
 
-	/**
-	 * Creates a chart.
-	 * @param dataset the data for the chart.
-	 * @return a chart.
-	 */
 
 private static AFreeChart createChart2() {
 	XYDataset dataset = createDataset2();
@@ -113,21 +110,11 @@ private static AFreeChart createChart2() {
 			true, // tooltips
 			false // urls
 			);
-
+        
 	XYPlot plot = (XYPlot) chart.getPlot();
-
-	DeviationRenderer renderer = new DeviationRenderer(true, false);
-	renderer.setSeriesStroke(0, 3.0f);
-	renderer.setSeriesStroke(1, 3.0f);
-	
-	renderer.setSeriesPaintType(0, new SolidColor(Color.rgb(0, 0, 255)));
-	renderer.setSeriesFillPaintType(0, new SolidColor(Color.rgb(250, 100, 100)));
-	//renderer.setSeriesFillPaintType(1, new SolidColor(Color.rgb(0, 0, 0)));
-	//renderer.setSeriesFillPaintType(2, new SolidColor(Color.rgb(0, 0, 0)));
-	//renderer.setSeriesFillPaintType(3, new SolidColor(Color.rgb(0, 0, 0)));
-	plot.setRenderer(renderer);
-
-	return chart;
+    plot.getDomainAxis().setLowerMargin(0.0);
+    plot.getDomainAxis().setUpperMargin(0.0);
+    return chart;
 }
 }
 
