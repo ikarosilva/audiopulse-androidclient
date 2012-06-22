@@ -1,15 +1,13 @@
 /* ===========================================================
- * AFreeChart : a free chart library for Android(tm) platform.
- *              (based on JFreeChart and JCommon)
+ * SanaAudioPulse : a free platform for teleaudiology.
+ *              
  * ===========================================================
  *
- * (C) Copyright 2010, by ICOMSYSTECH Co.,Ltd.
- * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2012, by Sana AudioPulse
  *
  * Project Info:
- *    AFreeChart: http://code.google.com/p/afreechart/
- *    JFreeChart: http://www.jfree.org/jfreechart/index.html
- *    JCommon   : http://www.jfree.org/jcommon/index.html
+ *    SanaAudioPulse: http://code.google.com/p/audiopulse/
+ *    Sana: http://sana.mit.edu/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,21 +25,24 @@
  * [Android is a trademark of Google Inc.]
  *
  * -----------------
- * DeviationRendererDemo02Activity.java
+ * PlotWaveformActivity.java 
+ * based on DeviationRendererDemo02Activity.java
+ * from afreechartdemo
  * -----------------
- * (C) Copyright 2011, by ICOMSYSTECH Co.,Ltd.
+ * (C) Copyright 2012, by SanaAudioPulse
  *
- * Original Author:  Yamakami Souichirou (for ICOMSYSTECH Co.,Ltd);
+ * Original Author:  Ikaro Silva
  * Contributor(s):   -;
  *
  * Changes
  * -------
- * 18-Oct-2011 : Added new sample code (SY);
- */
+ * Check: http://code.google.com/p/audiopulse/source/list
+ */ 
+
 
 package AudioPulseCalibration.AudioPulse.org;
 
-import AudioPulseCalibration.AudioPulse.org.DeviationRendererDemo02View;
+import AudioPulseCalibration.AudioPulse.org.PlotWaveformView;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -50,7 +51,7 @@ import android.view.Window;
 /**
  * DeviationRendererDemo02Activity
  */
-public class DeviationRendererDemo02Activity extends Activity {
+public class PlotWaveformActivity extends Activity {
 
     /**
      * Called when the activity is starting.
@@ -60,7 +61,7 @@ public class DeviationRendererDemo02Activity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        DeviationRendererDemo02View mView = new DeviationRendererDemo02View(this);
+        PlotWaveformView mView = new PlotWaveformView(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(mView);
     }
