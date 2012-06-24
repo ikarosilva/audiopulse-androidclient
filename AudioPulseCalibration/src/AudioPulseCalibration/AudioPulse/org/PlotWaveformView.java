@@ -40,19 +40,22 @@
  */ 
 package AudioPulseCalibration.AudioPulse.org;
 
-import java.util.Random;
-
 import org.afree.chart.ChartFactory;
 import org.afree.chart.AFreeChart;
 import org.afree.chart.plot.PlotOrientation;
 import org.afree.chart.plot.XYPlot;
+import org.afree.chart.renderer.AbstractRenderer;
+import org.afree.chart.renderer.xy.DeviationRenderer;
+import org.afree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.afree.data.xy.XYDataset;
 import org.afree.data.xy.XYSeries;
 import org.afree.data.xy.XYSeriesCollection;
+import org.afree.graphics.SolidColor;
 
 import AudioPulseCalibration.AudioPulse.org.DemoView;
 
 import android.content.Context;
+import android.graphics.Color;
 
 /**
  * DeviationRendererDemo02View
@@ -62,37 +65,29 @@ public class PlotWaveformView extends DemoView {
 	/**
 	 * constructor
 	 * @param context
+	 * @param sampleRate 
+	 * @param audioBuffer 
+	 * @param N 
 	 */
-	public PlotWaveformView(Context context) {
+	private static int N;
+	private static short[] audioBuffer;
+	private static int sampleRate;
+	
+	public PlotWaveformView(Context context, int N, short[] audioBuffer, int sampleRate) {
 		super(context);
-
+		PlotWaveformView.N=N;
+		PlotWaveformView.audioBuffer=audioBuffer;
+		PlotWaveformView.sampleRate=sampleRate;
 		final AFreeChart chart = createChart2();
 		setChart(chart);
 	}
-
-	
     private static XYSeriesCollection createDataset2() {	
     		XYSeriesCollection result = new XYSeriesCollection();
         	XYSeries series = new XYSeries(1);
-        	XYSeries series2 = new XYSeries(2);
-        	Random generator = new Random();
-        	double output=0;
-        	int N =5000;
-    		int[] a = new int[N];
-    		for(int n=0;n<N;n++){
-    			if(n<3){
-    				a[n]=1;
-    				output=1;
-    			}else{
-    				a[n]=a[a[n-1]]+ a[n-a[n-1]];
-    				output=(double) a[n] - ((double)n)/2;
-    			}
-    			series.add(n, output);
-    			series2.add(n, generator.nextGaussian()-output);
+        	for(int n=0;n<N;n++){
+    			series.add(1000*n/sampleRate, audioBuffer[n]);
     		}
-        	
         	result.addSeries(series);
-        	result.addSeries(series2);
             return result;
     }
 
@@ -101,21 +96,37 @@ private static AFreeChart createChart2() {
 	XYDataset dataset = createDataset2();
 	// create the chart...
 	AFreeChart chart = ChartFactory.createXYLineChart(
-			"RE DPOAE Test", // chart title
-			"Frequency (kHz)", // x axis label
-			"DPOAE Level (dB SPL)", // y axis label
+			"Waveform Plot", // chart title
+			"Time (ms)", // x axis label
+			"Amplitude", // y axis label
 			dataset, // data
 			PlotOrientation.VERTICAL,
-			true, // include legend
+			false, // include legend
 			true, // tooltips
 			false // urls
 			);
-        
+       
 	XYPlot plot = (XYPlot) chart.getPlot();
+	plot.setBackgroundPaintType(new SolidColor(Color.rgb(0, 0, 0)));
     plot.getDomainAxis().setLowerMargin(0.0);
     plot.getDomainAxis().setUpperMargin(0.0);
+    XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(true, false);
+	renderer.setSeriesPaintType(0, new SolidColor(Color.rgb(0, 255, 0)));
+	plot.setRenderer(renderer);
     return chart;
 }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 

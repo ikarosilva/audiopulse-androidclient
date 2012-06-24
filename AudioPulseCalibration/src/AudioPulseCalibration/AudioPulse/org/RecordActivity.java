@@ -56,7 +56,7 @@ public class RecordActivity extends Activity {
 	private AudioRecord mAudioRecord;
 	private boolean inRecordMode = false;
 	final int sampleRate = 8000;
-	final int stopTime = 10;
+	final int stopTime = 10; //in frames
 	final int channelConfig = AudioFormat.CHANNEL_IN_MONO;
 	final int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
 	final int mAudioSource=MediaRecorder.AudioSource.MIC;
@@ -143,9 +143,8 @@ public class RecordActivity extends Activity {
 		if(mAudioRecord == null) return;
 
 		short[] audioBuffer = new short[mAudioBufferSampleSize];
-
 		mAudioRecord.startRecording();
-
+		Bundle audio_bundle = new Bundle();
 		int audioRecordingState = mAudioRecord.getRecordingState();
 		if(audioRecordingState != AudioRecord.RECORDSTATE_RECORDING) {
 			Log.e(TAG, "audio is not being recorded");
@@ -154,7 +153,6 @@ public class RecordActivity extends Activity {
 		else {
 			Log.v(TAG, "starting recording of audio");
 		}
-
 		while(inRecordMode) {
 		    int samplesRead = mAudioRecord.read(audioBuffer, 0, mAudioBufferSampleSize);
 		    Log.v(TAG, "Got samples: " + samplesRead);
@@ -166,6 +164,10 @@ public class RecordActivity extends Activity {
 		}
 		Log.v(TAG, "plotting data...");
 		Intent intent = new Intent(this.getApplicationContext(), PlotWaveformActivity.class);
+		audio_bundle.putShortArray("audio_data",audioBuffer);
+		audio_bundle.putInt("sampleRate",sampleRate);
+		audio_bundle.putInt("N",mAudioBufferSampleSize);
+		intent.putExtras(audio_bundle);
         startActivity(intent);
 	}
 }
