@@ -60,8 +60,14 @@ public class PlotWaveformActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        PlotWaveformView mView = new PlotWaveformView(this);
+        Bundle audio_bundle = getIntent().getExtras();
+        int N=audio_bundle.getInt("N");
+        short[] audioBuffer;
+		audioBuffer=audio_bundle.getShortArray("audio_data");
+		int sampleRate=audio_bundle.getInt("sampleRate");
+		
+		
+        PlotWaveformView mView = new PlotWaveformView(this,N,audioBuffer,sampleRate);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(mView);
     }
