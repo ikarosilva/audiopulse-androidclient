@@ -39,7 +39,6 @@
 
 package AudioPulseCalibration.AudioPulse.org;
 
-import AudioPulseCalibration.AudioPulse.org.PlotWaveformActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.media.AudioFormat;
@@ -56,7 +55,7 @@ public class RecordActivity extends Activity {
 	private AudioRecord mAudioRecord;
 	private boolean inRecordMode = false;
 	final int sampleRate = 8000;
-	final int stopTime = 10; //in frames
+	final int stopTime = 2; //in frames
 	final int channelConfig = AudioFormat.CHANNEL_IN_MONO;
 	final int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
 	final int mAudioSource=MediaRecorder.AudioSource.MIC;
@@ -143,6 +142,7 @@ public class RecordActivity extends Activity {
 		if(mAudioRecord == null) return;
 
 		short[] audioBuffer = new short[mAudioBufferSampleSize];
+		double[] rec = new double[1024];
 		mAudioRecord.startRecording();
 		Bundle audio_bundle = new Bundle();
 		int audioRecordingState = mAudioRecord.getRecordingState();
@@ -159,14 +159,15 @@ public class RecordActivity extends Activity {
 		}	
 		mAudioRecord.stop();
 		Log.v(TAG, "Recording has stopped recording");
-		for (int i=0; i < mAudioBufferSampleSize; i++){
-	    Log.v(TAG, "Sample " + i + " = " + audioBuffer[i]);
+		for (int i=0; i < 1024; i++){
+	       rec[i]= (double) audioBuffer[i];
+		//rec[i]=Math.sin((double)2*Math.PI*3000*i/sampleRate);
 		}
 		Log.v(TAG, "plotting data...");
-		Intent intent = new Intent(this.getApplicationContext(), PlotWaveformActivity.class);
-		audio_bundle.putShortArray("audio_data",audioBuffer);
+		Intent intent = new Intent(this.getApplicationContext(), PlotSpectralActivity.class);
+		audio_bundle.putDoubleArray("audio_data",rec);
 		audio_bundle.putInt("sampleRate",sampleRate);
-		audio_bundle.putInt("N",mAudioBufferSampleSize);
+		audio_bundle.putInt("N",1024);
 		intent.putExtras(audio_bundle);
         startActivity(intent);
 	}

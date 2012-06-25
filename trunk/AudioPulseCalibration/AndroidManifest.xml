@@ -29,5 +29,13 @@
                 <category android:name="&CATEGORY_NAME;" />
             </intent-filter>
         </activity>
+        <activity android:name=".PlotSpectralActivity"
+            android:label="Spectral Plot"
+            android:configChanges="orientation|keyboardHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="&CATEGORY_NAME;" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>
