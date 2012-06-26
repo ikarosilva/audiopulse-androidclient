@@ -25,7 +25,7 @@
  * [Android is a trademark of Google Inc.]
  *
  * -----------------
- * PlotWaveformActivity.java 
+ * PlotSpectralActivity.java 
  * based on DeviationRendererDemo02Activity.java
  * from afreechartdemo
  * -----------------

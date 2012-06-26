@@ -140,9 +140,42 @@ public class RecordActivity extends Activity {
 		
 	private void getSamples() {
 		if(mAudioRecord == null) return;
-
 		short[] audioBuffer = new short[mAudioBufferSampleSize];
 		double[] rec = new double[1024];
+		final long play_time=3000;
+		final int Play_Sample_Rate=44100;
+		final int Play_Buffer_Size=1024;
+		final float frequency1 = 2000;
+        final float frequency2 = 2400;
+        final float increment1 = (float)(2*Math.PI) * frequency1 / Play_Sample_Rate; // angular increment for each sample
+        final float increment2 = (float)(2*Math.PI) * frequency2 / Play_Sample_Rate; // angular increment for each sample
+        
+		//Start playing calibration sound before recording
+		new Thread( new Runnable( ) 
+	      {
+	         public void run( )
+	         {        		
+	            float angle1 = 0;
+	            float angle2 = 0;
+	            AudioPlay device = new AudioPlay(Play_Sample_Rate);
+	            float samples[] = new float[Play_Buffer_Size];
+	            //Play for X duration
+	            long t0=System.currentTimeMillis();
+	            while( true )
+	            {
+	               for( int i = 0; i < samples.length; i++ )
+	               {
+	                  samples[i] = (float) (0.5*(float)Math.sin( angle1 ) + 0.60653066*0.5*(float)Math.sin( angle2 ));
+	                  angle1 += increment1;
+	                  angle2 += increment2;
+	               }
+	               device.writeSamples( samples );
+	               if(System.currentTimeMillis()-t0 > play_time)
+	            	   break;
+	            }        	
+	         }
+	      } ).start();
+		
 		mAudioRecord.startRecording();
 		Bundle audio_bundle = new Bundle();
 		int audioRecordingState = mAudioRecord.getRecordingState();
