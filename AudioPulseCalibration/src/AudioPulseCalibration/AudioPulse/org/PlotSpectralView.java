@@ -44,8 +44,6 @@ import org.afree.chart.ChartFactory;
 import org.afree.chart.AFreeChart;
 import org.afree.chart.plot.PlotOrientation;
 import org.afree.chart.plot.XYPlot;
-import org.afree.chart.renderer.AbstractRenderer;
-import org.afree.chart.renderer.xy.DeviationRenderer;
 import org.afree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.afree.data.xy.XYDataset;
 import org.afree.data.xy.XYSeries;
@@ -91,10 +89,15 @@ public class PlotSpectralView extends DemoView {
         	FastFourierTransformer FFT = new FastFourierTransformer(DftNormalization.STANDARD);
         	
     		//Calculate spectrum 
+        	//Variation based on
+        	//http://www.mathworks.com/support/tech-notes/1700/1702.html
     		Complex[] A= FFT.transform(audioBuffer, TransformType.FORWARD);
     		double fres= (double) sampleRate/N;
+    		double Pxx;
     		for(int n=0;n<(N/2);n++){
-    			series.add(((double) 0) + n*fres, Math.log(A[n].abs()));
+    			Pxx = A[n].abs()/(double)N;
+    			Pxx*=Pxx; //Not accurate for the DC & Nyquist, but we are not using it!
+    			series.add(((double) 0) + n*fres, 10*Math.log10(Pxx));
     		}
         	result.addSeries(series);
             return result;
@@ -105,7 +108,7 @@ private static AFreeChart createChart2() {
 	XYDataset dataset = createDataset2();
 	// create the chart...
 	AFreeChart chart = ChartFactory.createXYLineChart(
-			"Spectrum", // chart title
+			"Power Spectrum", // chart title
 			"Frequency (Hz)", // x axis label
 			"Amplitude (dB)", // y axis label
 			dataset, // data

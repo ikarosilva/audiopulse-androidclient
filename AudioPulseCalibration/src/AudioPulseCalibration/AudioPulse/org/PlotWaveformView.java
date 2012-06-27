@@ -44,8 +44,6 @@ import org.afree.chart.ChartFactory;
 import org.afree.chart.AFreeChart;
 import org.afree.chart.plot.PlotOrientation;
 import org.afree.chart.plot.XYPlot;
-import org.afree.chart.renderer.AbstractRenderer;
-import org.afree.chart.renderer.xy.DeviationRenderer;
 import org.afree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.afree.data.xy.XYDataset;
 import org.afree.data.xy.XYSeries;
@@ -70,10 +68,10 @@ public class PlotWaveformView extends DemoView {
 	 * @param N 
 	 */
 	private static int N;
-	private static short[] audioBuffer;
+	private static double[] audioBuffer;
 	private static int sampleRate;
 	
-	public PlotWaveformView(Context context, int N, short[] audioBuffer, int sampleRate) {
+	public PlotWaveformView(Context context, int N, double[] audioBuffer, int sampleRate) {
 		super(context);
 		PlotWaveformView.N=N;
 		PlotWaveformView.audioBuffer=audioBuffer;

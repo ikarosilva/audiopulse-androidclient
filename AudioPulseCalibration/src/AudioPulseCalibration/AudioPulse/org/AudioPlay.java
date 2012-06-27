@@ -58,7 +58,7 @@ public class AudioPlay
 	  int minSize =AudioTrack.getMinBufferSize( sampleRate, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT );        
       track = new AudioTrack( AudioManager.STREAM_MUSIC, sampleRate, 
                                         AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT, 
-                                        minSize, AudioTrack.MODE_STREAM);   
+                                        5*minSize, AudioTrack.MODE_STREAM);   
       track.setStereoVolume(AudioTrack.getMaxVolume(),AudioTrack.getMaxVolume());
       Log.e(TAG, "Starting Playing of Audio");
       track.play();    
