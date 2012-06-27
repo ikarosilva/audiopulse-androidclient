@@ -62,8 +62,8 @@ public class PlotWaveformActivity extends Activity {
         super.onCreate(savedInstanceState);
         Bundle audio_bundle = getIntent().getExtras();
         int N=audio_bundle.getInt("N");
-        short[] audioBuffer;
-		audioBuffer=audio_bundle.getShortArray("audio_data");
+        double[] audioBuffer;
+		audioBuffer=audio_bundle.getDoubleArray("audio_data");
 		int sampleRate=audio_bundle.getInt("sampleRate");
 		
 		

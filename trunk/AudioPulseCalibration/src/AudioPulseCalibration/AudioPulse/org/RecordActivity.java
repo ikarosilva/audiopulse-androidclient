@@ -62,7 +62,6 @@ public class RecordActivity extends Activity {
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		initAudioRecord();
 	}
 
@@ -72,7 +71,6 @@ public class RecordActivity extends Activity {
 		Log.v(TAG, "Resuming audio recording...");
 		inRecordMode = true;
 		Thread t = new Thread(new Runnable() {
-
 			@Override
 			public void run() {
 				getSamples();
@@ -103,14 +101,13 @@ public class RecordActivity extends Activity {
 			Log.v(TAG,"in onPeriodicNotification");
 		}
 		public void onMarkerReached(AudioRecord recorder){
-			Log.v(TAG," in onMarkerReached");
 			inRecordMode = false;
 		}
 	};
 
 	private void initAudioRecord() {
 		try {
-			mAudioBufferSize = 2 * AudioRecord.getMinBufferSize(sampleRate,
+			mAudioBufferSize = 5 * AudioRecord.getMinBufferSize(sampleRate,
 					channelConfig, audioFormat);
 			mAudioBufferSampleSize = mAudioBufferSize / 2;
 			mAudioRecord = new AudioRecord(
@@ -119,10 +116,6 @@ public class RecordActivity extends Activity {
 					channelConfig,
 					audioFormat,
 					mAudioBufferSize);
-			Log.v(TAG, "Setup of audio record succesfull. Buffer size = " + mAudioBufferSize);
-			Log.v(TAG, "sampleRate = " + sampleRate);
-			Log.v(TAG, "audioFormat= " + audioFormat);
-			Log.v(TAG, "   Sample buffer size = " + mAudioBufferSampleSize);
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		}
@@ -144,7 +137,7 @@ public class RecordActivity extends Activity {
 		double[] rec = new double[1024];
 		final long play_time=3000;
 		final int Play_Sample_Rate=44100;
-		final int Play_Buffer_Size=1024;
+		final int Play_Buffer_Size=1024*2;
 		final float frequency1 = 2000;
         final float frequency2 = 2400;
         final float increment1 = (float)(2*Math.PI) * frequency1 / Play_Sample_Rate; // angular increment for each sample
@@ -193,11 +186,12 @@ public class RecordActivity extends Activity {
 		mAudioRecord.stop();
 		Log.v(TAG, "Recording has stopped recording");
 		for (int i=0; i < 1024; i++){
-	       rec[i]= (double) audioBuffer[i];
+	       rec[i]= (double) audioBuffer[i]*SpectralWindows.hamming(i,1024);
 		//rec[i]=Math.sin((double)2*Math.PI*3000*i/sampleRate);
 		}
 		Log.v(TAG, "plotting data...");
 		Intent intent = new Intent(this.getApplicationContext(), PlotSpectralActivity.class);
+		//Intent intent = new Intent(this.getApplicationContext(), PlotWaveformActivity.class);
 		audio_bundle.putDoubleArray("audio_data",rec);
 		audio_bundle.putInt("sampleRate",sampleRate);
 		audio_bundle.putInt("N",1024);
