@@ -60,8 +60,8 @@ public class PlotSpectralActivity extends Activity {
         super.onCreate(savedInstanceState);
         Bundle audio_bundle = getIntent().getExtras();
         int N=audio_bundle.getInt("N");
-        double[] audioBuffer;
-		audioBuffer=audio_bundle.getDoubleArray("audio_data");
+        short[] audioBuffer;
+		audioBuffer=audio_bundle.getShortArray("audio_data");
 		int sampleRate=audio_bundle.getInt("sampleRate");
 		
 		
