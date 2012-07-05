@@ -72,13 +72,13 @@ public class PlotSpectralView extends DemoView {
 	 * @param N 
 	 */
 	private static int N;
-	private static double[] audioBuffer;
+	private static short[] audioBuffer;
 	private static int sampleRate;
 	
-	public PlotSpectralView(Context context, int N, double[] audioBuffer, int sampleRate) {
+	public PlotSpectralView(Context context, int N, short[] audioBuffer2, int sampleRate) {
 		super(context);
 		PlotSpectralView.N=N;
-		PlotSpectralView.audioBuffer=audioBuffer;
+		PlotSpectralView.audioBuffer=audioBuffer2;
 		PlotSpectralView.sampleRate=sampleRate;
 		final AFreeChart chart = createChart2();
 		setChart(chart);
@@ -87,17 +87,35 @@ public class PlotSpectralView extends DemoView {
     		XYSeriesCollection result = new XYSeriesCollection();
         	XYSeries series = new XYSeries(1);
         	FastFourierTransformer FFT = new FastFourierTransformer(DftNormalization.STANDARD);
-        	
-    		//Calculate spectrum 
+        	int SPEC_N=1024;
+        	double[] winData=new double[SPEC_N];
+        	Complex[] myFFT;
+        	Complex[] tmpFFT;
+        	double fres= (double) sampleRate/N;
+    		double[] Pxx = new double[SPEC_N];
+    		double tmpPxx;
+        	//Break FFT averaging into SPEC_N segments for averaging
+        	//Calculate spectrum 
         	//Variation based on
         	//http://www.mathworks.com/support/tech-notes/1700/1702.html
-    		Complex[] A= FFT.transform(audioBuffer, TransformType.FORWARD);
-    		double fres= (double) sampleRate/N;
-    		double Pxx;
-    		for(int n=0;n<(N/2);n++){
-    			Pxx = A[n].abs()/(double)N;
-    			Pxx*=Pxx; //Not accurate for the DC & Nyquist, but we are not using it!
-    			series.add(((double) 0) + n*fres, 10*Math.log10(Pxx));
+    		
+    		//Perform windowing and averaging on the power spectrum
+        	for (int i=0; i < N; i++){
+        		if(i*SPEC_N+SPEC_N > N)
+        			break;
+        		for (int k=0;k<SPEC_N;k++){
+        			winData[k]= (double) audioBuffer[i*SPEC_N + k]*SpectralWindows.hamming(k,SPEC_N);
+        		}
+        		tmpFFT=FFT.transform(winData,TransformType.FORWARD);
+        		//Calculate the average only  until 4k
+        		for(int k=0;k*fres<=4000;k++){
+        			tmpPxx = tmpFFT[k].abs()/(double)SPEC_N;
+        			tmpPxx*=tmpPxx; //Not accurate for the DC & Nyquist, but we are not using it!
+        			Pxx[k]=( (k*Pxx[k]) + tmpPxx )/((double) k+1);
+        		}
+     		}
+    		for(int k=0;k*fres<=4000;k++){
+    			series.add(((double) 0) + k*fres, 10*Math.log10(Pxx[k]));
     		}
         	result.addSeries(series);
             return result;
