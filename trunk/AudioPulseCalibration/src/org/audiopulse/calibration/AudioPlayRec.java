@@ -1,4 +1,4 @@
-package AudioPulseCalibration.AudioPulse.org;
+package org.audiopulse.calibration;
 
 import android.app.Activity;
 import android.media.AudioFormat;

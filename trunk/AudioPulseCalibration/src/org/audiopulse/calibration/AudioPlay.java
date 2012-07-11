@@ -39,7 +39,7 @@
  * Check: http://code.google.com/p/audiopulse/source/list
  */ 
 
-package AudioPulseCalibration.AudioPulse.org;
+package org.audiopulse.calibration;
 
 import android.media.AudioFormat;
 import android.media.AudioManager;

@@ -40,9 +40,9 @@
  */ 
 
 
-package AudioPulseCalibration.AudioPulse.org;
+package org.audiopulse.calibration;
 
-import AudioPulseCalibration.AudioPulse.org.PlotWaveformView;
+import org.audiopulse.calibration.PlotWaveformView;
 
 import android.app.Activity;
 import android.os.Bundle;
