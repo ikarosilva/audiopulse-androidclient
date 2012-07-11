@@ -25,7 +25,7 @@
  * [Android is a trademark of Google Inc.]
  *
  * -----------------
- * AudioPulseCalibrationActivity.java
+ * SpectralWindows.java
  * -----------------
  * (C) Copyright 2012, by SanaAudioPulse
  *
@@ -37,16 +37,12 @@
  * Check: http://code.google.com/p/audiopulse/source/list
  */ 
 
-package AudioPulseCalibration.AudioPulse.org;
+package org.audiopulse.calibration;
 
-import android.app.Activity;
-import android.os.Bundle;
+public class SpectralWindows {
 
-public class AudioPulseCalibrationActivity extends Activity {
-    /** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-    }
+	public static double hamming(int n, int N){
+		double out=0.54 - 0.46*Math.cos(2*Math.PI*(double)n/(N-1));
+		return out;	
+	}
 }

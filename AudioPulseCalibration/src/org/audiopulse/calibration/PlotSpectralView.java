@@ -38,7 +38,7 @@
  * -------
  * Check: http://code.google.com/p/audiopulse/source/list
  */ 
-package AudioPulseCalibration.AudioPulse.org;
+package org.audiopulse.calibration;
 
 import org.afree.chart.ChartFactory;
 import org.afree.chart.AFreeChart;
@@ -53,8 +53,8 @@ import org.apache.commons.math3.complex.Complex;
 import org.apache.commons.math3.transform.DftNormalization;
 import org.apache.commons.math3.transform.FastFourierTransformer;
 import org.apache.commons.math3.transform.TransformType;
+import org.audiopulse.calibration.DemoView;
 
-import AudioPulseCalibration.AudioPulse.org.DemoView;
 
 import android.content.Context;
 import android.graphics.Color;

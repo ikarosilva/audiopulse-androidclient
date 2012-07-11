@@ -41,7 +41,7 @@
  * 14-Jan-2011 : Updated API docs
  */ 
 
-package AudioPulseCalibration.AudioPulse.org;
+package org.audiopulse.calibration;
 
 import org.afree.ui.RectangleInsets;
 import org.afree.chart.ChartTouchEvent;
