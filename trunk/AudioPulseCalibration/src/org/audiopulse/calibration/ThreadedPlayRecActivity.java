@@ -68,6 +68,7 @@ public class ThreadedPlayRecActivity extends Activity
         	workerThread = 
         		new Thread(
         				new PlayThreadRunnable(statusBackHandler));
+        	workerThread.start();
     	}
     	if (workerThread.getState() != Thread.State.TERMINATED)
     	{

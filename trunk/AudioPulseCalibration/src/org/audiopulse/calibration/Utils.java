@@ -31,7 +31,7 @@ public class Utils
 	{
 		try
 		{
-			Thread.sleep(secs * 100);
+			Thread.sleep(secs * 1000);
 		}
 		catch(InterruptedException x)
 		{
