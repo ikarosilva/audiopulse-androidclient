@@ -12,6 +12,7 @@ public class ReportStatusHandler extends Handler
 	public ReportStatusHandler(ThreadedPlayRecActivity inParentActivity)
 	{
 		parentActivity = inParentActivity;
+		Log.d(TAG,"Registering handler in parent activity");
 	}
 
 	@Override
@@ -25,6 +26,7 @@ public class ReportStatusHandler extends Handler
 
 	private void printMessage(String str)
 	{
+		Log.d(TAG,"Printing status: " + str);
 		parentActivity.appendText(str);
 	}
 }
