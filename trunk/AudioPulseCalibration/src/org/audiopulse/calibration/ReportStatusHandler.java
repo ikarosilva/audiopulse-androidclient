@@ -2,7 +2,6 @@ package org.audiopulse.calibration;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 public class ReportStatusHandler extends Handler
 {
@@ -11,22 +10,20 @@ public class ReportStatusHandler extends Handler
 	
 	public ReportStatusHandler(ThreadedPlayRecActivity inParentActivity)
 	{
+		//Registering handler in parent activity 
 		parentActivity = inParentActivity;
-		Log.d(TAG,"Registering handler in parent activity");
 	}
 
 	@Override
 	public void handleMessage(Message msg) 
 	{
-		String pm = Utils.getStringFromABundle(msg.getData());
-				
-		Log.d(TAG,pm);
+		String pm = Utils.getStringFromABundle(msg.getData());		
 		this.printMessage(pm);
 	}
 
 	private void printMessage(String str)
 	{
-		Log.d(TAG,"Printing status: " + str);
+		//Printing status
 		parentActivity.appendText(str);
 	}
 }
