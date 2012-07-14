@@ -2,7 +2,6 @@ package org.audiopulse.calibration;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,6 +10,8 @@ import android.widget.TextView;
 public class ThreadedPlayRecActivity extends Activity 
 {
 	public static final String TAG="ThreadedPlayRecActivity";
+	Bundle audio_bundle = new Bundle();
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,29 +60,31 @@ public class ThreadedPlayRecActivity extends Activity
     }
    
     Handler statusBackHandler = null;
-    Thread workerThread = null;
+    Thread playThread = null;
     private void playThread()
     {
     	if (statusBackHandler == null)
     	{
     		statusBackHandler = new ReportStatusHandler(this);
-        	workerThread = 
+        	playThread = 
         		new Thread(
         				new PlayThreadRunnable(statusBackHandler));
-        	workerThread.start();
+        	playThread.setPriority(Thread.MAX_PRIORITY);
+        	playThread.start();
     	}
-    	if (workerThread.getState() != Thread.State.TERMINATED)
+    	if (playThread.getState() != Thread.State.TERMINATED)
     	{
-    		Log.d(TAG, "Play thread is new or alive, but not terminated");
+    		//Play thread is new or alive, but not terminated
     	}
     	else
     	{
-    		Log.d(TAG, "Play thread is likely dead, starting");
+    		//Play thread is likely dead, starting
     		//Create a new thread, no way to resurrect a dead thread.
-        	workerThread = 
+        	playThread = 
         		new Thread(
         				new PlayThreadRunnable(statusBackHandler));
-    		workerThread.start();
+    		playThread.start();
     	}
     }
+    
 }
