@@ -25,7 +25,7 @@
  * [Android is a trademark of Google Inc.]
  *
  * -----------------
- * PlotWaveformActivity.java 
+ * PlotSpectralActivity.java 
  * based on DeviationRendererDemo02Activity.java
  * from afreechartdemo
  * -----------------
@@ -40,9 +40,7 @@
  */ 
 
 
-package org.audiopulse.graphics;
-
-import org.audiopulse.activities.PlotWaveformView;
+package org.audiopulse.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -51,7 +49,7 @@ import android.view.Window;
 /**
  * DeviationRendererDemo02Activity
  */
-public class PlotWaveformActivity extends Activity {
+public class PlotSpectralActivity extends Activity {
 
     /**
      * Called when the activity is starting.
@@ -62,12 +60,12 @@ public class PlotWaveformActivity extends Activity {
         super.onCreate(savedInstanceState);
         Bundle audio_bundle = getIntent().getExtras();
         int N=audio_bundle.getInt("N");
-        double[] audioBuffer;
-		audioBuffer=audio_bundle.getDoubleArray("audio_data");
+        short[] audioBuffer;
+		audioBuffer=audio_bundle.getShortArray("audio_data");
 		int sampleRate=audio_bundle.getInt("sampleRate");
 		
 		
-        PlotWaveformView mView = new PlotWaveformView(this,N,audioBuffer,sampleRate);
+        PlotSpectralView mView = new PlotSpectralView(this,N,audioBuffer,sampleRate);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(mView);
     }

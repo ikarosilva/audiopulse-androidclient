@@ -37,7 +37,7 @@
  * Check: http://code.google.com/p/audiopulse/source/list
  */ 
 
-package org.audiopulse.io;
+package org.audiopulse.activities;
 
 import org.audiopulse.calibration.R;
 
