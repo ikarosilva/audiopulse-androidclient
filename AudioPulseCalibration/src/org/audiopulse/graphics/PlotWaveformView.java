@@ -49,9 +49,6 @@ import org.afree.data.xy.XYDataset;
 import org.afree.data.xy.XYSeries;
 import org.afree.data.xy.XYSeriesCollection;
 import org.afree.graphics.SolidColor;
-import org.audiopulse.activities.DemoView;
-
-
 import android.content.Context;
 import android.graphics.Color;
 

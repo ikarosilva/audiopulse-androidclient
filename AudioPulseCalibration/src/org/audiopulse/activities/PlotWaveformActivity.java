@@ -42,7 +42,7 @@
 
 package org.audiopulse.activities;
 
-import org.audiopulse.activities.PlotWaveformView;
+import org.audiopulse.graphics.PlotWaveformView;
 
 import android.app.Activity;
 import android.os.Bundle;
