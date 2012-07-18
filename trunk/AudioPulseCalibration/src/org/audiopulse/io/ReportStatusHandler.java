@@ -21,6 +21,7 @@ public class ReportStatusHandler extends Handler
 	{
 		String pm = Utils.getStringFromABundle(msg.getData());		
 		this.printMessage(pm);
+		
 	}
 
 	private void printMessage(String str)
