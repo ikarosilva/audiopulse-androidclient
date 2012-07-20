@@ -46,6 +46,7 @@ import org.audiopulse.graphics.PlotSpectralView;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 
 /**
@@ -57,16 +58,18 @@ public class PlotSpectralActivity extends Activity {
      * Called when the activity is starting.
      * @param savedInstanceState
      */
+	private static final String TAG="PlotSpectralActivity";
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v(TAG,"extracting bundle extras");
         Bundle audio_bundle = getIntent().getExtras();
-        int N=audio_bundle.getInt("N");
+        long N=audio_bundle.getLong("N");
         short[] audioBuffer;
 		audioBuffer=audio_bundle.getShortArray("audio_data");
-		int sampleRate=audio_bundle.getInt("sampleRate");
+		float sampleRate=audio_bundle.getInt("sampleRate");
 		
-		
+		Log.v(TAG,"Calling view to plot data");
         PlotSpectralView mView = new PlotSpectralView(this,N,audioBuffer,sampleRate);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(mView);

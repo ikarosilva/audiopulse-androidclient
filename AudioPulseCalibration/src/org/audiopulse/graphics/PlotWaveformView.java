@@ -64,11 +64,11 @@ public class PlotWaveformView extends DemoView {
 	 * @param audioBuffer 
 	 * @param N 
 	 */
-	private static int N;
-	private static double[] audioBuffer;
-	private static int sampleRate;
+	private static long N;
+	private static short[] audioBuffer;
+	private static float sampleRate;
 	
-	public PlotWaveformView(Context context, int N, double[] audioBuffer, int sampleRate) {
+	public PlotWaveformView(Context context, long N, short[] audioBuffer, float sampleRate) {
 		super(context);
 		PlotWaveformView.N=N;
 		PlotWaveformView.audioBuffer=audioBuffer;
@@ -79,7 +79,7 @@ public class PlotWaveformView extends DemoView {
     private static XYSeriesCollection createDataset2() {	
     		XYSeriesCollection result = new XYSeriesCollection();
         	XYSeries series = new XYSeries(1);
-        	for(int n=0;n<N;n++){
+        	for(int n=0;n< (int) N;n++){
     			series.add(1000*n/sampleRate, audioBuffer[n]);
     		}
         	result.addSeries(series);

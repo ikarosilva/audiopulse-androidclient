@@ -12,6 +12,8 @@ import android.util.Log;
 
 public class RecordThreadRunnable implements Runnable
 {
+	private static final String TAG="RecordThreadRunnable";
+	private long record_time;
 	private int mAudioBufferSize;
 	private AudioRecord mAudio;
 	final static int channelConfig = AudioFormat.CHANNEL_IN_MONO;
@@ -27,8 +29,6 @@ public class RecordThreadRunnable implements Runnable
 	{
 		mainThreadHandler = h;
 	}
-	public static String TAG = "RecordThreadRunnable";
-	private long record_time;
 	
 	public void run()
 	{
@@ -68,13 +68,14 @@ public class RecordThreadRunnable implements Runnable
 	public void informFinish()
 	{
 		mAudio.release();
+		Log.v("TAG","Putting data in bundle to package");
 		Message m = this.mainThreadHandler.obtainMessage();
 		Bundle results= new Bundle();
 		String msg="Finished and released recording in " + record_time/1000 + " seconds";
-		results.putCharArray("message", msg.toCharArray());
+		results.putString("message", msg);
 		results.putShortArray("samples",this.samples);
 		results.putFloat("recSampleRate",this.sampleRate);
-		results.putLong("N",this.samples.length);
+		results.putLong("N",(long) this.samples.length);
 		m.setData(results);
 		this.mainThreadHandler.sendMessage(m);
 		

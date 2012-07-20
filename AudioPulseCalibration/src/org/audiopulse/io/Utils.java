@@ -1,10 +1,14 @@
 package org.audiopulse.io;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import android.os.Bundle;
 import android.util.Log;
 
 public class Utils 
 {
+	private static final String TAG="Utils";
 	public static long getThreadId()
 	{
 		Thread t = Thread.currentThread();
@@ -24,28 +28,26 @@ public class Utils
 	
 	public static void logThreadSignature()
 	{
-		Log.d("ThreadUtils", getThreadSignature());
+		Log.d(TAG, getThreadSignature());
 	}
 	
-	public static void sleepForInSecs(int secs)
-	{
-		try
-		{
-			Thread.sleep(secs * 1000);
-		}
-		catch(InterruptedException x)
-		{
-			throw new RuntimeException("interrupted",x);
-		}
-	}
 	public static Bundle getStringAsABundle(String message)
 	{
+		Log.v(TAG,"Getting string as bundle");
 		Bundle b = new Bundle();
 		b.putString("message", message);
 		return b;
 	}
 	public static String getStringFromABundle(Bundle b)
 	{
+		Log.v(TAG,"Getting string from Bundle");
+		Log.v(TAG,"Printing bundle keys...:");
+		for(Iterator<String> k = b.keySet().iterator(); k.hasNext();){
+			Log.v(TAG,k.next().toString());
+		}
+			
+		String str= b.getString("message");
+		Log.v(TAG,str);
 		return b.getString("message");
 	}
 }
