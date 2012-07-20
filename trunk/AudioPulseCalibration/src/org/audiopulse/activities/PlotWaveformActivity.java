@@ -61,10 +61,10 @@ public class PlotWaveformActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle audio_bundle = getIntent().getExtras();
-        int N=audio_bundle.getInt("N");
-        double[] audioBuffer;
-		audioBuffer=audio_bundle.getDoubleArray("audio_data");
-		int sampleRate=audio_bundle.getInt("sampleRate");
+        long N=audio_bundle.getLong("N");
+        short[] audioBuffer;
+		audioBuffer=audio_bundle.getShortArray("samples");
+		float sampleRate=audio_bundle.getFloat("recSampleRate");
 		
 		
         PlotWaveformView mView = new PlotWaveformView(this,N,audioBuffer,sampleRate);

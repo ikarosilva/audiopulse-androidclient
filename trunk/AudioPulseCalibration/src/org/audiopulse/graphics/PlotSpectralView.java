@@ -55,6 +55,7 @@ import org.apache.commons.math3.transform.FastFourierTransformer;
 import org.apache.commons.math3.transform.TransformType;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 
 /**
  * DeviationRendererDemo02View
@@ -68,15 +69,21 @@ public class PlotSpectralView extends DemoView {
 	 * @param audioBuffer 
 	 * @param N 
 	 */
-	private static int N;
+	private static final String TAG="PlotSpectralView";
+	private static long N;
 	private static short[] audioBuffer;
-	private static int sampleRate;
+	private static float sampleRate;
 	
-	public PlotSpectralView(Context context, int N, short[] audioBuffer2, int sampleRate) {
+	public PlotSpectralView(Context context, long N, short[] audioBuffer2, float sampleRate) {
 		super(context);
+		Log.v(TAG,"Extracting data values");
 		PlotSpectralView.N=N;
 		PlotSpectralView.audioBuffer=audioBuffer2;
 		PlotSpectralView.sampleRate=sampleRate;
+		
+		Log.v(TAG,"N= " + N);
+		Log.v(TAG,"sampleRate= " + sampleRate);
+		
 		final AFreeChart chart = createChart2();
 		setChart(chart);
 	}
@@ -86,7 +93,6 @@ public class PlotSpectralView extends DemoView {
         	FastFourierTransformer FFT = new FastFourierTransformer(DftNormalization.STANDARD);
         	int SPEC_N=1024;
         	double[] winData=new double[SPEC_N];
-        	Complex[] myFFT;
         	Complex[] tmpFFT;
         	double fres= (double) sampleRate/N;
     		double[] Pxx = new double[SPEC_N];
@@ -97,6 +103,7 @@ public class PlotSpectralView extends DemoView {
         	//http://www.mathworks.com/support/tech-notes/1700/1702.html
     		
     		//Perform windowing and averaging on the power spectrum
+    		Log.v(TAG,"Performing windowing and averaging on the signal");
         	for (int i=0; i < N; i++){
         		if(i*SPEC_N+SPEC_N > N)
         			break;
@@ -132,7 +139,7 @@ private static AFreeChart createChart2() {
 			true, // tooltips
 			false // urls
 			);
-       
+	Log.v(TAG,"Generating plot");   
 	XYPlot plot = (XYPlot) chart.getPlot();
 	plot.setBackgroundPaintType(new SolidColor(Color.rgb(0, 0, 0)));
     plot.getDomainAxis().setLowerMargin(0.0);
