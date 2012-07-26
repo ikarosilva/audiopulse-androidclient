@@ -1,4 +1,8 @@
 package org.audiopulse.activities;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
 import org.audiopulse.R;
 import org.audiopulse.io.PlayThreadRunnable;
 import org.audiopulse.io.RecordThreadRunnable;
@@ -22,6 +26,9 @@ public class ThreadedPlayRecActivity extends Activity
 	Handler recordStatusBackHandler = null;
 	Thread playThread = null;
 	Thread recordThread = null;
+	public static double playTime=1;
+	public Bundle audioResultsBundle;
+	ScheduledThreadPoolExecutor threadPool=new ScheduledThreadPoolExecutor(2);
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -47,10 +54,15 @@ public class ThreadedPlayRecActivity extends Activity
 		}
 		if (item.getItemId() == R.id.menu_play_thread)
 		{
+			Log.v(TAG,"Starting execution of thread pool");
 			this.playRecordThread();
 			return true;
 		}
-		return true;
+		if(item.getItemId() == R.id.plot_waveform){
+			this.plotWaveform();
+			return true;
+		}
+		return false;
 	}
 
 	private TextView getTextView(){
@@ -72,46 +84,48 @@ public class ThreadedPlayRecActivity extends Activity
 
 	private void playRecordThread()
 	{
-		if (playStatusBackHandler == null)
-		{
-			playStatusBackHandler = new ReportStatusHandler(this);
-			recordStatusBackHandler = new ReportStatusHandler(this);
-			playThread = 
-					new Thread(
-							new PlayThreadRunnable(playStatusBackHandler));
-			recordThread = 
-					new Thread(
-							new RecordThreadRunnable(recordStatusBackHandler));
+		playStatusBackHandler = new ReportStatusHandler(this);
+		recordStatusBackHandler = new ReportStatusHandler(this);
+		ExecutorService execSvc = Executors.newFixedThreadPool( 2 );
+		playThread = 
+				new Thread(
+						new PlayThreadRunnable(playStatusBackHandler,playTime));
+		recordThread = 
+				new Thread(
+						new RecordThreadRunnable(recordStatusBackHandler,playTime));
 
-			playThread.setPriority(Thread.MAX_PRIORITY);
-			recordThread.setPriority(Thread.MAX_PRIORITY);
-			playThread.start();
-			recordThread.start();
-		}
-		if (playThread.getState() != Thread.State.TERMINATED)
-		{
-			//Play thread is new or alive, but not terminated
-		}
-		else
-		{
-			//Play thread is likely dead, starting
-			//Create a new thread, no way to resurrect a dead thread.
-			playThread = 
-					new Thread(
-							new PlayThreadRunnable(playStatusBackHandler));
-			playThread.start();
-			recordThread = 
-					new Thread(
-							new RecordThreadRunnable(recordStatusBackHandler));
-			recordThread.start();
-		}
+		//playThread.setPriority(Thread.MAX_PRIORITY);
+		//recordThread.setPriority(Thread.MAX_PRIORITY);
+		
+		
+		Log.v(TAG,"Executing thread pool");
+		long st=System.currentTimeMillis();
+		//playThread.start();
+		//recordThread.start();
+		execSvc.execute( playThread );
+		execSvc.execute( recordThread );
+		execSvc.shutdown();
+		
+		/*threadPool.execute(playThread);
+		threadPool.execute(recordThread);
+		threadPool.shutdown();
+		*/
+		long nt=System.currentTimeMillis();
+		Log.v(TAG,"shutting down thread pool after: " + (st-nt)/1000 );
 	}
 
-	public void plotSamples(Bundle audioResultsBundle) {
-		Log.v(TAG,"Starting activity for plotting results");
+	public void plotSamples() {
+		Log.v(TAG,"Sample rate is " + this.audioResultsBundle.getFloat("recSampleRate"));
+		Log.v(TAG,"Calling view to plot data");
 		Intent intent = new Intent(this.getApplicationContext(), PlotSpectralActivity.class);
-		//Intent intent = new Intent(this.getApplicationContext(), PlotWaveformActivity.class);
-		intent.putExtras(audioResultsBundle);
+		intent.putExtras(this.audioResultsBundle);
+		startActivity(intent);
+	}
+	
+	public void plotWaveform() {
+		Log.v(TAG,"Calling view to plot waveform data");
+		Intent intent = new Intent(this.getApplicationContext(), PlotWaveformActivity.class);
+		intent.putExtras(this.audioResultsBundle);
 		startActivity(intent);
 	}
 

@@ -13,92 +13,115 @@ import android.util.Log;
 public class RecordThreadRunnable implements Runnable
 {
 	private static final String TAG="RecordThreadRunnable";
-	private long record_time;
-	private int mAudioBufferSize;
+	private double record_time;
+	private double playTime;
+	private int soundCardBufferSize;
 	private AudioRecord mAudio;
 	final static int channelConfig = AudioFormat.CHANNEL_IN_MONO;
 	final static int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
 	int streamMode= AudioManager.STREAM_MUSIC;
 	int trackMode=AudioTrack.MODE_STREAM;
-	final static int sampleRate=44100;
-	final static int Buffer_Size=sampleRate*5;
-	final short[] samples = new short[Buffer_Size];
+	private int sampleRate=44100;
+	private int Buffer_Size;
+	private int soundCardChunkSize=160;
+	private int IN_REC_MODE;
+	final short[] samples ;
 	Handler mainThreadHandler = null;
-	
-	public RecordThreadRunnable(Handler h)
+	private Bundle results;
+	private static final int sizeOfShort=2; //Size of short in Bytes
+
+	public RecordThreadRunnable(Handler h, double playTime)
 	{
+		Log.v(TAG,"constructing record thread");
 		mainThreadHandler = h;
+		this.Buffer_Size=(int) (playTime*sampleRate);
+		this.samples = new short[Buffer_Size];
+		this.initRecord();
+		this.playTime=playTime;
+		this.IN_REC_MODE=0;
 	}
-	
-	public void run()
+
+	public synchronized void run()
 	{
-		Log.d(TAG,"Starting recording");
+		Log.d(TAG,"Starting run in recording");
 		informStart();
-		initRecord();
+
 		//Send status of initialization
 		if(this.mAudio.getState() != AudioTrack.STATE_INITIALIZED) {
 			informMiddle("Error: Audio record was not properly initialized!!");
 			return;
-    	}
-    	else {
-    		informMiddle("Audio track sucessfully initialized.");
-    	}
-		
+		}
+
 		//Record Stimulus
+		informMiddle("Recording stimulus");
+		Log.d(TAG,"Recording stimulus");
+		this.IN_REC_MODE=1;
 		record();
-		informMiddle("Playing stimulus");
-		
+		this.IN_REC_MODE=0;
+
 		//Finish up
 		informFinish();
 	}
-	
+
 	public void informMiddle(String str)
 	{
 		Message m = this.mainThreadHandler.obtainMessage();
 		m.setData(Utils.getStringAsABundle(str));
 		this.mainThreadHandler.sendMessage(m);
 	}
-	
+
 	public void informStart()
 	{
+		Log.v(TAG,"inform record starting");
 		Message m = this.mainThreadHandler.obtainMessage();
 		m.setData(Utils.getStringAsABundle("Starting recording"));
 		this.mainThreadHandler.sendMessage(m);
 	}
 	public void informFinish()
 	{
+		Log.v(TAG,"Informing recording finish");
 		mAudio.release();
-		Log.v("TAG","Putting data in bundle to package");
 		Message m = this.mainThreadHandler.obtainMessage();
-		Bundle results= new Bundle();
-		String msg="Finished and released recording in " + record_time/1000 + " seconds";
-		results.putString("message", msg);
-		results.putShortArray("samples",this.samples);
-		results.putFloat("recSampleRate",this.sampleRate);
-		results.putLong("N",(long) this.samples.length);
-		m.setData(results);
+		this.results= new Bundle();
+		String msg="Finished and released recording in " + this.record_time/1000 + " seconds";
+		this.results.putString("message", msg);
+		this.results.putShortArray("samples",this.samples);
+		this.results.putFloat("recSampleRate",this.sampleRate);
+		this.results.putLong("N",(long) this.samples.length);
+		m.setData(this.results);
 		this.mainThreadHandler.sendMessage(m);
-		
 	}
-	
-	 private void initRecord(){
-	    	try {
-	    		mAudioBufferSize =AudioRecord.getMinBufferSize(sampleRate,channelConfig,audioFormat)*2;         
-	    		mAudio = new AudioRecord(MediaRecorder.AudioSource.MIC,sampleRate,channelConfig,
-                        audioFormat, mAudioBufferSize);
-	    	} catch (IllegalArgumentException e) {
-	    		e.printStackTrace();
-	    	}	
-	    }
-	 
-	
-	  
-	 private void record() {
-		mAudio.startRecording();
+
+	public int getRecMode(){
+		return this.IN_REC_MODE;
+	}
+
+	private void initRecord(){
+		Log.v(TAG,"Initialized record track");
+		try {
+			int tmpSize=AudioRecord.getMinBufferSize(sampleRate,channelConfig,audioFormat);         
+			soundCardBufferSize=Math.max(this.samples.length*sizeOfShort,tmpSize);
+			mAudio = new AudioRecord(MediaRecorder.AudioSource.MIC,sampleRate,channelConfig,
+					audioFormat, soundCardBufferSize);
+			mAudio.setPositionNotificationPeriod(soundCardChunkSize);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}	
+
+	}
+
+
+
+	private void record() {
+		Log.v(TAG,"Starting recording of "+ this.samples.length +" samples through mAudio");
 		long st = System.currentTimeMillis();
-        mAudio.read(this.samples,0,this.samples.length);
-        mAudio.stop();
+		mAudio.startRecording();
+		while(System.currentTimeMillis()-st < (playTime*1000)){
+			mAudio.read(this.samples,0,this.samples.length);
+		}
+		mAudio.stop();
 		record_time = System.currentTimeMillis()-st;
-	 }
-	 
+		Log.v(TAG,"low level recording took: " + record_time/1000);
+	}
+
 }
