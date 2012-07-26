@@ -115,13 +115,13 @@ public class PlotSpectralView extends DemoView {
         		}
         		tmpFFT=FFT.transform(winData,TransformType.FORWARD);
         		//Calculate the average only  about maxFreq
-        		for(int k=0;k<SPEC_N;k++){
+        		for(int k=0;k<(SPEC_N/2);k++){
         			tmpPxx = tmpFFT[k].abs()/(double)SPEC_N;
         			tmpPxx*=tmpPxx; //Not accurate for the DC & Nyquist, but we are not using it!
         			Pxx[k]=( (k*Pxx[k]) + tmpPxx )/((double) k+1);
         		}
      		}
-    		for(int k=0;k<SPEC_N;k++){
+    		for(int k=0;k<(SPEC_N/2);k++){
     			series.add(((double) 0) + k*fres, 10*Math.log10(Pxx[k]));
     		}
         	result.addSeries(series);

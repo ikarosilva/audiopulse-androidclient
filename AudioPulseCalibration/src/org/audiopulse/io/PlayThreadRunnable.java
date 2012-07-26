@@ -15,7 +15,7 @@ public class PlayThreadRunnable implements Runnable
 	final static int audioPLAYFormat = AudioFormat.ENCODING_PCM_16BIT;
 	int streamMode= AudioManager.STREAM_MUSIC;
 	int trackMode=AudioTrack.MODE_STREAM;
-	final static int sampleRatePlay=44100;
+	final static int sampleRatePlay=8000;
 	int Play_Buffer_Size;
 	final short[] samples;
 	Handler mainThreadHandler = null;

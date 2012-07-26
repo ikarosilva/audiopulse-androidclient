@@ -27,6 +27,7 @@ public class ThreadedPlayRecActivity extends Activity
 	Thread playThread = null;
 	Thread recordThread = null;
 	public static double playTime=1;
+	public static double playRecDelay=0.5; //Allow for playback to stay playing while recording finishes
 	public Bundle audioResultsBundle;
 	ScheduledThreadPoolExecutor threadPool=new ScheduledThreadPoolExecutor(2);
 
@@ -89,29 +90,17 @@ public class ThreadedPlayRecActivity extends Activity
 		ExecutorService execSvc = Executors.newFixedThreadPool( 2 );
 		playThread = 
 				new Thread(
-						new PlayThreadRunnable(playStatusBackHandler,playTime));
+						new PlayThreadRunnable(playStatusBackHandler,playTime+playRecDelay));
 		recordThread = 
 				new Thread(
 						new RecordThreadRunnable(recordStatusBackHandler,playTime));
 
-		//playThread.setPriority(Thread.MAX_PRIORITY);
-		//recordThread.setPriority(Thread.MAX_PRIORITY);
-		
-		
+		recordThread.setPriority(Thread.MAX_PRIORITY);
 		Log.v(TAG,"Executing thread pool");
-		long st=System.currentTimeMillis();
-		//playThread.start();
-		//recordThread.start();
 		execSvc.execute( playThread );
 		execSvc.execute( recordThread );
 		execSvc.shutdown();
-		
-		/*threadPool.execute(playThread);
-		threadPool.execute(recordThread);
-		threadPool.shutdown();
-		*/
-		long nt=System.currentTimeMillis();
-		Log.v(TAG,"shutting down thread pool after: " + (st-nt)/1000 );
+
 	}
 
 	public void plotSamples() {
