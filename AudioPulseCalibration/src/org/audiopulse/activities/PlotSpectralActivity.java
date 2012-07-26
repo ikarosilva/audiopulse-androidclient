@@ -66,9 +66,10 @@ public class PlotSpectralActivity extends Activity {
         Bundle audio_bundle = getIntent().getExtras();
         long N=audio_bundle.getLong("N");
         short[] audioBuffer;
-		audioBuffer=audio_bundle.getShortArray("audio_data");
-		float sampleRate=audio_bundle.getInt("sampleRate");
+		audioBuffer=audio_bundle.getShortArray("samples");
+		float sampleRate=audio_bundle.getFloat("recSampleRate");
 		
+		Log.v(TAG,"Sample rate is " + sampleRate);
 		Log.v(TAG,"Calling view to plot data");
         PlotSpectralView mView = new PlotSpectralView(this,N,audioBuffer,sampleRate);
         requestWindowFeature(Window.FEATURE_NO_TITLE);

@@ -16,65 +16,75 @@ public class PlayThreadRunnable implements Runnable
 	int streamMode= AudioManager.STREAM_MUSIC;
 	int trackMode=AudioTrack.MODE_STREAM;
 	final static int sampleRatePlay=44100;
-	final static int Play_Buffer_Size=sampleRatePlay*5;
-	final short[] samples = new short[Play_Buffer_Size];
+	int Play_Buffer_Size;
+	final short[] samples;
 	Handler mainThreadHandler = null;
 	int count = 0;
-	public PlayThreadRunnable(Handler h)
-	{
-		mainThreadHandler = h;
-	}
+	private int IN_PLAY_MODE;
 	public static String TAG = "PlayThreadRunnable";
 	private long play_time;
 	
-	public void run()
+	
+	public PlayThreadRunnable(Handler h, double playTime)
 	{
-		Log.d(TAG,"Starting playback");
+		Log.v(TAG,"constructing playback thread");
+		mainThreadHandler = h;
+		this.Play_Buffer_Size=(int) (playTime*sampleRatePlay);
+		this.samples = new short[Play_Buffer_Size];
+		this.initPlayTack();
+		this.generateStimulus();
+		this.IN_PLAY_MODE=0;
+	}
+	
+	public synchronized void run()
+	{
+		Log.d(TAG,"Starting run in playback");
 		informStart();
-		initPlayTack();
 		//Send status of initialization
 		if(this.mAudioPLAY.getState() != AudioTrack.STATE_INITIALIZED) {
 			informMiddle("Error: Audio record was not properly initialized!!");
 			return;
     	}
-    	else {
-    		informMiddle("Audio track sucessfully initialized.");
-    	}
-		
-		//Fill Playback buffer
-		generateStimulus();
-		informMiddle("Generated stimulus");
 		
 		//Play Stimulus
-		playStimulus();
+		this.IN_PLAY_MODE=1;
 		informMiddle("Playing stimulus");
-		
+		playStimulus();
+		this.IN_PLAY_MODE=0;
 		//Finish up
 		informFinish();
 	}
 	
 	public void informMiddle(String str)
 	{
+		Log.v(TAG,"informing middle of playback");
 		Message m = this.mainThreadHandler.obtainMessage();
 		m.setData(Utils.getStringAsABundle(str));
 		this.mainThreadHandler.sendMessage(m);
 	}
 	
+	public int getPlayMode(){
+		return this.IN_PLAY_MODE;
+	}
 	public void informStart()
 	{
+		Log.v(TAG,"informing start of playback");
 		Message m = this.mainThreadHandler.obtainMessage();
 		m.setData(Utils.getStringAsABundle("Starting playback"));
 		this.mainThreadHandler.sendMessage(m);
 	}
 	public void informFinish()
 	{
+		Log.v(TAG,"informing finish of playback");
 		mAudioPLAY.release();
 		Message m = this.mainThreadHandler.obtainMessage();
 		m.setData(Utils.getStringAsABundle("Finished and released playback in " + play_time/1000 + " seconds"));
 		this.mainThreadHandler.sendMessage(m);
 	}
 	
+	
 	 private void initPlayTack(){
+		 Log.v(TAG,"Initializing playback track");
 	    	try {
 	    		mPLAYAudioBufferSize =AudioTrack.getMinBufferSize(sampleRatePlay, channelPLAYConfig, audioPLAYFormat);        
 	    		mAudioPLAY = new AudioTrack(streamMode, sampleRatePlay, channelPLAYConfig, audioPLAYFormat, 
@@ -87,6 +97,7 @@ public class PlayThreadRunnable implements Runnable
 	 
 	
 	 private void generateStimulus(){
+		 Log.v(TAG,"generating stimulus");
 		 float frequency1 = 2000;
 		 float frequency2 = 2400;
 		 final float increment1 = (float)(2*Math.PI) * frequency1 / sampleRatePlay; // angular increment for each sample
@@ -103,6 +114,7 @@ public class PlayThreadRunnable implements Runnable
 	
 	 
 	 private void playStimulus() {
+		Log.v(TAG,"playing stimulus");
 		mAudioPLAY.play();
 		long st = System.currentTimeMillis();
 		mAudioPLAY.write( this.samples, 0, this.samples.length );

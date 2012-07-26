@@ -1,14 +1,14 @@
 package org.audiopulse.io;
 
 import java.util.Iterator;
-import java.util.Set;
-
 import android.os.Bundle;
 import android.util.Log;
 
 public class Utils 
 {
 	private static final String TAG="Utils";
+	protected static Bundle b;
+	
 	public static long getThreadId()
 	{
 		Thread t = Thread.currentThread();
@@ -33,21 +33,14 @@ public class Utils
 	
 	public static Bundle getStringAsABundle(String message)
 	{
-		Log.v(TAG,"Getting string as bundle");
-		Bundle b = new Bundle();
+		Log.v(TAG,"Getting string AS A Bundle");
+		b= new Bundle();
 		b.putString("message", message);
 		return b;
 	}
 	public static String getStringFromABundle(Bundle b)
 	{
-		Log.v(TAG,"Getting string from Bundle");
-		Log.v(TAG,"Printing bundle keys...:");
-		for(Iterator<String> k = b.keySet().iterator(); k.hasNext();){
-			Log.v(TAG,k.next().toString());
-		}
-			
-		String str= b.getString("message");
-		Log.v(TAG,str);
+		Log.v(TAG,"Getting string FROM A Bundle");
 		return b.getString("message");
 	}
 }

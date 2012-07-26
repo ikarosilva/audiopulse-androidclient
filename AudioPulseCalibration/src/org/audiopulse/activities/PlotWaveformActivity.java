@@ -46,12 +46,15 @@ import org.audiopulse.graphics.PlotWaveformView;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 
 /**
  * DeviationRendererDemo02Activity
  */
 public class PlotWaveformActivity extends Activity {
+	
+	private static final String TAG="PlotWaveformActivity";
 
     /**
      * Called when the activity is starting.
@@ -62,12 +65,11 @@ public class PlotWaveformActivity extends Activity {
         super.onCreate(savedInstanceState);
         Bundle audio_bundle = getIntent().getExtras();
         long N=audio_bundle.getLong("N");
-        short[] audioBuffer;
-		audioBuffer=audio_bundle.getShortArray("samples");
-		float sampleRate=audio_bundle.getFloat("recSampleRate");
-		
-		
-        PlotWaveformView mView = new PlotWaveformView(this,N,audioBuffer,sampleRate);
+        short[] samples;
+		samples=audio_bundle.getShortArray("samples");
+		float recSampleRate=audio_bundle.getFloat("recSampleRate");
+		Log.v(TAG,"recSampleRate= " + recSampleRate + " N=" + N + " time =" + N/recSampleRate);
+        PlotWaveformView mView = new PlotWaveformView(this,N,samples,recSampleRate);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(mView);
     }

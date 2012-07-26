@@ -51,6 +51,7 @@ import org.afree.data.xy.XYSeriesCollection;
 import org.afree.graphics.SolidColor;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 
 /**
  * DeviationRendererDemo02View
@@ -65,22 +66,25 @@ public class PlotWaveformView extends DemoView {
 	 * @param N 
 	 */
 	private static long N;
-	private static short[] audioBuffer;
-	private static float sampleRate;
+	private static short[] samples;
+	private static float recSampleRate;
+	private static final String TAG="PlotWaveformView";
 	
 	public PlotWaveformView(Context context, long N, short[] audioBuffer, float sampleRate) {
 		super(context);
+		Log.v(TAG,"Creating waveform view");
 		PlotWaveformView.N=N;
-		PlotWaveformView.audioBuffer=audioBuffer;
-		PlotWaveformView.sampleRate=sampleRate;
+		PlotWaveformView.samples=audioBuffer;
+		PlotWaveformView.recSampleRate=sampleRate;
 		final AFreeChart chart = createChart2();
 		setChart(chart);
 	}
     private static XYSeriesCollection createDataset2() {	
+    		Log.v(TAG,"adding data to series");
     		XYSeriesCollection result = new XYSeriesCollection();
         	XYSeries series = new XYSeries(1);
         	for(int n=0;n< (int) N;n++){
-    			series.add(1000*n/sampleRate, audioBuffer[n]);
+    			series.add(n/recSampleRate, samples[n]);
     		}
         	result.addSeries(series);
             return result;
@@ -88,11 +92,12 @@ public class PlotWaveformView extends DemoView {
 
 
 private static AFreeChart createChart2() {
+	Log.v(TAG,"Creating chart");
 	XYDataset dataset = createDataset2();
 	// create the chart...
 	AFreeChart chart = ChartFactory.createXYLineChart(
 			"Waveform Plot", // chart title
-			"Time (ms)", // x axis label
+			"Time (s)", // x axis label
 			"Amplitude", // y axis label
 			dataset, // data
 			PlotOrientation.VERTICAL,
