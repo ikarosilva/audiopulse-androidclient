@@ -21,7 +21,7 @@ public class RecordThreadRunnable implements Runnable
 	final static int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
 	int streamMode= AudioManager.STREAM_MUSIC;
 	int trackMode=AudioTrack.MODE_STREAM;
-	private int sampleRate=44100;
+	private int sampleRate=8000;
 	private int Buffer_Size;
 	private int soundCardChunkSize=160;
 	private int IN_REC_MODE;
@@ -29,7 +29,8 @@ public class RecordThreadRunnable implements Runnable
 	Handler mainThreadHandler = null;
 	private Bundle results;
 	private static final int sizeOfShort=2; //Size of short in Bytes
-
+	public int clipped;
+	
 	public RecordThreadRunnable(Handler h, double playTime)
 	{
 		Log.v(TAG,"constructing record thread");
@@ -88,8 +89,15 @@ public class RecordThreadRunnable implements Runnable
 		this.results.putShortArray("samples",this.samples);
 		this.results.putFloat("recSampleRate",this.sampleRate);
 		this.results.putLong("N",(long) this.samples.length);
+		this.results.putInt("clipped",this.clipped);
 		m.setData(this.results);
 		this.mainThreadHandler.sendMessage(m);
+		if(this.clipped==1){
+			Log.v(TAG,"Recording was clipped!!");
+			Message m2 = this.mainThreadHandler.obtainMessage();
+			m2.setData(Utils.getStringAsABundle("Recording was clipped!!"));
+			this.mainThreadHandler.sendMessage(m2);
+		}
 	}
 
 	public int getRecMode(){
@@ -122,6 +130,12 @@ public class RecordThreadRunnable implements Runnable
 		mAudio.stop();
 		record_time = System.currentTimeMillis()-st;
 		Log.v(TAG,"low level recording took: " + record_time/1000);
+		
+		//Check for clipping and sudden jumps
+		for(int i=0;i<this.samples.length;i++){
+			clipped=( this.samples[i] > Short.MAX_VALUE) ? 1:0;
+		}
+		
 	}
 
 }
