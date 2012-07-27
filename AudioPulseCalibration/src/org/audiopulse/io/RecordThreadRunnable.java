@@ -135,7 +135,7 @@ public class RecordThreadRunnable implements Runnable
 		for(int i=0;i<this.samples.length;i++){
 			clipped=( this.samples[i] > Short.MAX_VALUE) ? 1:0;
 		}
-		
+		assert ( clipped == 0 ) : "Recording has been clipped!! Exiting... ";
 	}
 
 }
