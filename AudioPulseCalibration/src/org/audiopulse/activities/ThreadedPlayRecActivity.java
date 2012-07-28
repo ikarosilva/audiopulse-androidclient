@@ -50,17 +50,18 @@ public class ThreadedPlayRecActivity extends Activity
 		appendMenuItemText(item);
 		if (item.getItemId() == R.id.menu_clear)
 		{
-			this.emptyText();
+			emptyText();
 			return true;
 		}
 		if (item.getItemId() == R.id.menu_play_thread)
 		{
 			Log.v(TAG,"Starting execution of thread pool");
-			this.playRecordThread();
+			playRecordThread();
 			return true;
 		}
-		if(item.getItemId() == R.id.plot_waveform){
-			this.plotWaveform();
+		if(item.getItemId() == R.id.plot_waveform)
+		{
+			plotWaveform();
 			return true;
 		}
 		return false;
@@ -103,9 +104,8 @@ public class ThreadedPlayRecActivity extends Activity
 
 	}
 
-	public void plotSamples() {
+	public void plotSpectrum() {
 		Log.v(TAG,"Sample rate is " + this.audioResultsBundle.getFloat("recSampleRate"));
-		Log.v(TAG,"Calling view to plot data");
 		Intent intent = new Intent(this.getApplicationContext(), PlotSpectralActivity.class);
 		intent.putExtras(this.audioResultsBundle);
 		startActivity(intent);

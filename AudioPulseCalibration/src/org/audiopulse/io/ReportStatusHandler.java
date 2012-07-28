@@ -46,6 +46,7 @@ public class ReportStatusHandler extends Handler
 		//Printing status
 		Log.v(TAG,"Plotting data from bundle");
 		parentActivity.audioResultsBundle=b;
-		parentActivity.plotSamples();
+		//parentActivity.plotSpectrum();
+		parentActivity.plotWaveform();
 	}
 }

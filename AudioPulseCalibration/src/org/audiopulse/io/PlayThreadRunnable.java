@@ -11,7 +11,7 @@ public class PlayThreadRunnable implements Runnable
 {
 	private int mPLAYAudioBufferSize;
 	private AudioTrack mAudioPLAY;
-	final static int channelPLAYConfig = AudioFormat.CHANNEL_OUT_MONO;
+	final static int channelPLAYConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
 	final static int audioPLAYFormat = AudioFormat.ENCODING_PCM_16BIT;
 	int streamMode= AudioManager.STREAM_MUSIC;
 	int trackMode=AudioTrack.MODE_STREAM;
