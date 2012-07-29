@@ -68,7 +68,7 @@ public class PlotWaveformActivity extends Activity {
         short[] samples;
 		samples=audio_bundle.getShortArray("samples");
 		float recSampleRate=audio_bundle.getFloat("recSampleRate");
-		Log.v(TAG,"recSampleRate= " + recSampleRate + " N=" + N + " time =" + N/recSampleRate);
+		Log.v(TAG,"creating plot, recSampleRate= " + recSampleRate + " N=" + N + " time =" + N/recSampleRate);
         PlotWaveformView mView = new PlotWaveformView(this,N,samples,recSampleRate);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(mView);

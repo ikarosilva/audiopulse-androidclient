@@ -83,10 +83,14 @@ public class PlotWaveformView extends DemoView {
     		Log.v(TAG,"adding data to series");
     		XYSeriesCollection result = new XYSeriesCollection();
         	XYSeries series = new XYSeries(1);
-        	for(int n=0;n< (int) N;n++){
+        	long st=System.currentTimeMillis();
+        	int M=(int)N;
+        	int n=0;
+        	for(n=0;n< M;n++){
     			series.add(n/recSampleRate, samples[n]);
     		}
         	result.addSeries(series);
+        	Log.v(TAG,"Series added in :" + (System.currentTimeMillis()-st) + " ms");
             return result;
     }
 
