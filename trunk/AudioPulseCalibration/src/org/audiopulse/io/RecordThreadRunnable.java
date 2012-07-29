@@ -1,3 +1,42 @@
+/* ===========================================================
+ * SanaAudioPulse : a free platform for teleaudiology.
+ *              
+ * ===========================================================
+ *
+ * (C) Copyright 2012, by Sana AudioPulse
+ *
+ * Project Info:
+ *    SanaAudioPulse: http://code.google.com/p/audiopulse/
+ *    Sana: http://sana.mit.edu/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * [Android is a trademark of Google Inc.]
+ *
+ * -----------------
+ * AudioPulseCalibrationActivity.java
+ * -----------------
+ * (C) Copyright 2012, by SanaAudioPulse
+ *
+ * Original Author:  Ikaro Silva
+ * Contributor(s):   -;
+ *
+ * Changes
+ * -------
+ * Check: http://code.google.com/p/audiopulse/source/list
+ */ 
+
 package org.audiopulse.io;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -132,14 +171,7 @@ public class RecordThreadRunnable implements Runnable
 		}
 		mAudio.stop();
 		record_time = System.currentTimeMillis()-st;
-		Log.v(TAG,"low level recording took: " + record_time/1000);
-		
-		//Check for clipping and sudden jumps
-		for(int i=0;i<this.samples.length;i++){
-			clipped=( this.samples[i] > Short.MAX_VALUE) ? 1:0;
-			Log.e(TAG, "signal recorded has been clipped!!");
-		}
-		assert ( clipped == 0 ) : "Recording has been clipped!! Exiting... ";
+		Log.v(TAG,"low level recording took: " + record_time/1000);		
 	}
 
 }

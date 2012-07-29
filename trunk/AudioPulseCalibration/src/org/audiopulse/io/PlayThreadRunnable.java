@@ -1,4 +1,45 @@
+/* ===========================================================
+ * SanaAudioPulse : a free platform for teleaudiology.
+ *              
+ * ===========================================================
+ *
+ * (C) Copyright 2012, by Sana AudioPulse
+ *
+ * Project Info:
+ *    SanaAudioPulse: http://code.google.com/p/audiopulse/
+ *    Sana: http://sana.mit.edu/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * [Android is a trademark of Google Inc.]
+ *
+ * -----------------
+ * AudioPulseCalibrationActivity.java
+ * -----------------
+ * (C) Copyright 2012, by SanaAudioPulse
+ *
+ * Original Author:  Ikaro Silva
+ * Contributor(s):   -;
+ *
+ * Changes
+ * -------
+ * Check: http://code.google.com/p/audiopulse/source/list
+ */ 
+
 package org.audiopulse.io;
+
+import org.audiopulse.utilities.PeriodicSeries;
 
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -11,13 +52,13 @@ public class PlayThreadRunnable implements Runnable
 {
 	private int mPLAYAudioBufferSize;
 	private AudioTrack mAudioPLAY;
-	final static int channelPLAYConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
+	final static int channelPLAYConfig = AudioFormat.CHANNEL_CONFIGURATION_STEREO;
 	final static int audioPLAYFormat = AudioFormat.ENCODING_PCM_16BIT;
 	int streamMode= AudioManager.STREAM_MUSIC;
 	int trackMode=AudioTrack.MODE_STREAM;
 	final static int sampleRatePlay=8000;
 	int Play_Buffer_Size;
-	final short[] samples;
+	private short[] samples;
 	Handler mainThreadHandler = null;
 	int count = 0;
 	private int IN_PLAY_MODE;
@@ -98,6 +139,12 @@ public class PlayThreadRunnable implements Runnable
 	
 	 private void generateStimulus(){
 		 Log.v(TAG,"generating stimulus");
+		 double[] f={2000,2400};
+		 PeriodicSeries stimuli=new PeriodicSeries(this.samples.length,sampleRatePlay,f);
+		 
+		 this.samples=stimuli.generatePeriodicSeries();
+		 
+		 /*
 		 float frequency1 = 2000;
 		 float frequency2 = 2400;
 		 final float increment1 = (float)(2*Math.PI) * frequency1 / sampleRatePlay; // angular increment for each sample
@@ -110,6 +157,7 @@ public class PlayThreadRunnable implements Runnable
 			 angle1 += increment1;
 			 angle2 += increment2;
 		 }
+		 */
 	 }
 	
 	 
