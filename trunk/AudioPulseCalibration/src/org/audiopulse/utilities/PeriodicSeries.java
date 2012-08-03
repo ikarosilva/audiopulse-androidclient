@@ -39,70 +39,77 @@
 
 package org.audiopulse.utilities;
 
+import android.util.Log;
+
 public class PeriodicSeries {
 
 
+	public static final String TAG="PeriodicSeries";
 	public double[] frequency;
 	public double[] amplitude;
-	private double[] increment;
 	private short[] data;
-	public short N;
+	public int N;
 	public double Fs; //Sampling frequency in Hz
 
-	public PeriodicSeries(short N,double Fs,double[] frequency){
+	public PeriodicSeries(int N,double Fs,double[] frequency){
 		this.N=N;
 		this.Fs=Fs;
 		this.frequency=frequency;
-		this.data=new short[N];
+		data=new short[N];
+		amplitude= new double[frequency.length];
 		for (int i=0;i<frequency.length;i++){
-			this.amplitude[i]=1; //Set default amplitudes in intensity
+			amplitude[i]=1; //Set default amplitudes in intensity
 		}
 	}
 	
-	//Constructor for a DPOAE signal, which is a Periodic Series
-	public PeriodicSeries(short N,double Fs,DPOAESignal dpoae){
+	//Constructor for Calibration signals
+	public PeriodicSeries(int N,double Fs,CalibrationTone caltone){
 		this.N=N;
 		this.Fs=Fs;
-		this.frequency=dpoae.getStimulusFrequency();
-		this.amplitude=dpoae.getStimulusAmplitude();
-		this.data=new short[N];
+		frequency=caltone.getStimulusFrequency();
+		amplitude=caltone.getStimulusAmplitude();
+		Log.v(TAG,"Generating calibration tone amplitude = " + amplitude[0] + " of length= " + amplitude.length);
+		//Log.v(TAG," f =" + frequency);
+		data=new short[N];
+	}
+		
+	//Constructor for DPOAE signals, which is a Periodic Series
+	public PeriodicSeries(int N,double Fs,DPOAESignal dpoae){
+		this.N=N;
+		this.Fs=Fs;
+		frequency=dpoae.getStimulusFrequency();
+		amplitude=dpoae.getStimulusAmplitude();
+		data=new short[N];
 	}
 
-	public PeriodicSeries(short N,double Fs,double[] frequency,double[] amplitude){
+	public PeriodicSeries(int N,double Fs,double[] frequency,double[] amplitude){
 		this.N=N;
 		this.Fs=Fs;
 		this.frequency=frequency;
-		this.data=new short[N];
+		data=new short[N];
 		this.amplitude=amplitude; //Amplitudes are in intensity!!
 	}
 
 	public short[] generatePeriodicSeries(){
 
-		this.increment=new double[frequency.length];
-		this.amplitude=new double[frequency.length];
 		double tmpSample;
 		double PI2=2*Math.PI;
 		double normalizingFactor=0;
-
+		double[] increment= new double[frequency.length];;
 		for (int i=0;i<frequency.length;i++){
-			this.increment[i] = PI2 * this.frequency[i] /this.Fs; // angular increment for each sample
+			increment[i] = PI2 * frequency[i] /Fs; // angular increment for each sample
 			normalizingFactor +=amplitude[i];
 		}
-		for( int i = 0; i < this.N; i++ )
+		for( int i = 0; i < N; i++ )
 		{
 			tmpSample=0;
-			for( int k = 0; k < this.frequency.length; k++ )
+			for( int k = 0; k < frequency.length; k++ )
 			{
-				tmpSample += this.amplitude[k]*Math.sin(this.increment[k]*i);
+				tmpSample += amplitude[k]*Math.sin(increment[k]*i);
 			}
-			this.data[i]=(short) (Short.MAX_VALUE*tmpSample/normalizingFactor);
+			data[i]=(short) (Short.MAX_VALUE*tmpSample/normalizingFactor);
 		}
-		return this.data;
+		return data;
 	}
-	
-	
-	
-	
-	
 	
 } //of Class definition

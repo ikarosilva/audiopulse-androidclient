@@ -44,9 +44,9 @@ public class DPOAESignal {
 	private double[] f;
 	private double[] A; //returned Amplitudes are in intensity
 	private double f12; //Expected response frequency
-	private String type;
+	private String protocol;
 	
-	public static enum DPOAEBioLogic {
+	public static enum protocolBioLogic {
 		//Generate a specific set of DPOAE stimuli based on the same parameters from 
 		//that of the Bio-Logic Otoacoustic emissions Report (2012)
 		F8k(6516,7969,64.8,54.9),
@@ -60,17 +60,17 @@ public class DPOAESignal {
 		private double A1;	//Amplitudes are in dB
 		private double A2;
 		private double f12; //Expected response frequency
-		private String type="DPOAEBioLogic";
-		DPOAEBioLogic(double f1,double f2, double A1, double A2) {
+		private String protocol="BioLogic";
+		protocolBioLogic(double f1,double f2, double A1, double A2) {
 			this.f1=f1;
 			this.f2=f2;
-			this.A1=Math.log10(A1/20); //Convert amplitudes to normalized intensity
-			this.A2=Math.log10(A2/20);
+			this.A1=Math.pow(10,A1/20); //Convert amplitudes to normalized intensity
+			this.A2=Math.pow(10,A2/20);
 			this.f12=2*f1-f2;
 		}
 	}
 
-	public static enum DPOAEHOAE{
+	public static enum protocolHOAE{
 		//Generate a specific set of DPOAE stimuli based on the same parameters from 
 		//"Handbook of Otocoustic Emissions" J. Hall, Singular Publishing Group Copyright 2000
 		// Screening parameters in page 136.
@@ -84,31 +84,31 @@ public class DPOAESignal {
 		private double A1; //Amplitudes are in dB
 		private double A2;
 		private double f12; //Expected response frequency
-		private String type="DPOAEHOAE";
-		DPOAEHOAE(double f2) {
+		private String protocol="HOAE";
+		protocolHOAE(double f2) {
 			this.f1=f2/1.2;
 			this.f2=f2;
-			this.A1=Math.log10(65/20); //Convert amplitudes to normalized intensity
-			this.A2=Math.log10(65/20);
+			this.A1=Math.pow(10,65/20); //Convert amplitudes to normalized intensity
+			this.A2=Math.pow(10,65/20);
 			this.f12=2*f1-f2;
 		}
 	}
 
-	public DPOAESignal(DPOAEBioLogic dpoae){
+	public DPOAESignal(protocolBioLogic dpoae){
 		double[] f={dpoae.f1,dpoae.f2};
 		this.f=f;
 		double[] A= {dpoae.A1, dpoae.A2};
 		this.A=A;
 		this.f12=dpoae.f12;
-		this.type=dpoae.type;
+		this.protocol=dpoae.protocol;
 	}
-	public DPOAESignal(DPOAEHOAE dpoae){
+	public DPOAESignal(protocolHOAE dpoae){
 		double[] f={dpoae.f1,dpoae.f2};
 		this.f=f;
 		double[] A= {dpoae.A1, dpoae.A2};
 		this.A=A;
 		this.f12=dpoae.f12;
-		this.type=dpoae.type;
+		this.protocol=dpoae.protocol;
 	}
 	
 	public double[] getStimulusFrequency(){
@@ -120,7 +120,7 @@ public class DPOAESignal {
 	public double getExpectedResponseFrequency(){
 		return this.f12;
 	}
-	public String getType(){
-		return this.type;
+	public String getProtocol(){
+		return this.protocol;
 	}
 }
