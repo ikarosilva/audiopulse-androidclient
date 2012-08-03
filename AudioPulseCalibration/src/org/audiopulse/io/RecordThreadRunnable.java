@@ -147,7 +147,7 @@ public class RecordThreadRunnable implements Runnable
 
 
 	private synchronized void record() {
-		Log.v(TAG,"Starting recording of "+ this.samples.length +" samples through mAudio");
+		//Log.v(TAG,"Starting recording of "+ this.samples.length +" samples through mAudio");
 		long st = System.currentTimeMillis();
 		mAudio.startRecording();
 		int ind=0;
@@ -165,7 +165,7 @@ public class RecordThreadRunnable implements Runnable
                 break;
             }
             dataLeft -= endbuffer;
-            Log.v(TAG, "dataleft: " + dataLeft);
+            //Log.v(TAG, "dataleft: " + dataLeft);
 			ind++;	
 			//Log.v(TAG,"Read : " + nRead + " short from " + endbuffer + " " +  100*(float)nRead/endbuffer + " %");			
 		}

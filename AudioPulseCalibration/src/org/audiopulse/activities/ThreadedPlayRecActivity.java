@@ -145,16 +145,16 @@ public class ThreadedPlayRecActivity extends Activity
 	}
 
 	public void plotSpectrum() {
-		Log.v(TAG,"Sample rate is " + this.audioResultsBundle.getFloat("recSampleRate"));
+		Log.v(TAG,"Sample rate is " + audioResultsBundle.getFloat("recSampleRate"));
 		Intent intent = new Intent(this.getApplicationContext(), PlotSpectralActivity.class);
-		intent.putExtras(this.audioResultsBundle);
+		intent.putExtras(audioResultsBundle);
 		startActivity(intent);
 	}
 	
 	public void plotWaveform() {
 		Log.v(TAG,"Calling view to plot waveform data");
 		Intent intent = new Intent(this.getApplicationContext(), PlotWaveformActivity.class);
-		intent.putExtras(this.audioResultsBundle);
+		intent.putExtras(audioResultsBundle);
 		startActivity(intent);
 	}
 
