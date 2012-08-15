@@ -41,7 +41,6 @@ package org.audiopulse.io;
 
 import org.audiopulse.utilities.CalibrationTone;
 import org.audiopulse.utilities.PeriodicSeries;
-
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -53,7 +52,7 @@ public class PlayThreadRunnable implements Runnable
 {
 	private int mPLAYAudioBufferSize;
 	private AudioTrack mAudioPLAY;
-	int channelPLAYConfig = AudioFormat.CHANNEL_OUT_MONO;
+	int channelPLAYConfig = AudioFormat.CHANNEL_OUT_STEREO;
 	int audioPLAYFormat = AudioFormat.ENCODING_PCM_16BIT;
 	int streamMode= AudioManager.STREAM_MUSIC;
 	int trackMode=AudioTrack.MODE_STREAM;
@@ -77,7 +76,7 @@ public class PlayThreadRunnable implements Runnable
 		}else{
 			samples = new short[PlayBufferSize];
 		}
-		this.initPlayTack();
+		this.initPlayTrack();
 		this.generateStimulus();
 
 	}
@@ -124,7 +123,7 @@ public class PlayThreadRunnable implements Runnable
 	}
 
 
-	private void initPlayTack(){
+	private void initPlayTrack(){
 		Log.v(TAG,"Initializing playback track");
 		try {
 			mPLAYAudioBufferSize =AudioTrack.getMinBufferSize(sampleRatePlay, channelPLAYConfig, audioPLAYFormat)*2;   
@@ -132,9 +131,19 @@ public class PlayThreadRunnable implements Runnable
 			mAudioPLAY = new AudioTrack(streamMode, sampleRatePlay, channelPLAYConfig, audioPLAYFormat, 
 					mPLAYAudioBufferSize,trackMode);   
 			mAudioPLAY.setStereoVolume(AudioTrack.getMaxVolume(),AudioTrack.getMaxVolume());
+			mAudioPLAY.setPlaybackRate(sampleRatePlay);
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		}	
+		Log.v(TAG,"Channel count is:" + mAudioPLAY.getChannelCount());
+		Log.v(TAG,"Fs count is:" + mAudioPLAY.getPlaybackRate());
+		Log.v(TAG,"Coding:" + mAudioPLAY.getAudioFormat());
+		Log.v(TAG,"Fs count is:" + mAudioPLAY.getSampleRate());
+		
+		if(mAudioPLAY.getState() != AudioTrack.STATE_INITIALIZED) {
+			informMiddle("Error: Audio record was not properly initialized!!");
+			Log.e(TAG,"Error: Audio record was not properly initialized!!");
+		}
 	}
 
 
@@ -146,8 +155,14 @@ public class PlayThreadRunnable implements Runnable
 		if(channelPLAYConfig == AudioFormat.CHANNEL_OUT_STEREO){
 			//Interleave the tracks for processing
 			for(int i=0;i<tmpSamples.length;i++){
-				samples[i]=tmpSamples[i];
-				samples[i+1]=tmpSamples[i];
+				if(i<(samples.length/2)){
+					samples[i]=tmpSamples[i];
+					samples[i+1]=tmpSamples[i];
+				}else{
+					samples[i]=0;
+					samples[i+1]=0;
+				}
+
 			}
 		}else {
 			//Mono channel

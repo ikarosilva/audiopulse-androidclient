@@ -41,9 +41,6 @@ package org.audiopulse.activities;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-
-
-import org.audiopulse.R;
 import org.audiopulse.io.PlayThreadRunnable;
 import org.audiopulse.io.RecordThreadRunnable;
 import org.audiopulse.io.ReportStatusHandler;
