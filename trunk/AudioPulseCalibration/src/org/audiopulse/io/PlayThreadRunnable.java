@@ -41,6 +41,8 @@ package org.audiopulse.io;
 
 import org.audiopulse.utilities.CalibrationTone;
 import org.audiopulse.utilities.PeriodicSeries;
+import org.audiopulse.utilities.WhiteNoise;
+
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -52,13 +54,13 @@ public class PlayThreadRunnable implements Runnable
 {
 	private int mPLAYAudioBufferSize;
 	private AudioTrack mAudioPLAY;
-	int channelPLAYConfig = AudioFormat.CHANNEL_OUT_STEREO;
+	int channelPLAYConfig = AudioFormat.CHANNEL_OUT_MONO;
 	int audioPLAYFormat = AudioFormat.ENCODING_PCM_16BIT;
 	int streamMode= AudioManager.STREAM_MUSIC;
 	int trackMode=AudioTrack.MODE_STREAM;
-	final static int sampleRatePlay=8000;
+	public final static int sampleRatePlay=8000;
 	int PlayBufferSize;
-	private short[] samples;
+	public static short[] samples;
 	Handler mainThreadHandler = null;
 	public static String TAG = "PlayThreadRunnable";
 	private long play_time;
@@ -152,21 +154,22 @@ public class PlayThreadRunnable implements Runnable
 		CalibrationTone caltone = new CalibrationTone(CalibrationTone.device.ER10C);
 		PeriodicSeries stimuli=new PeriodicSeries(PlayBufferSize, PlayThreadRunnable.sampleRatePlay,caltone);
 		short[] tmpSamples = stimuli.generatePeriodicSeries();
+		//ClickTrain stimuli = new ClickTrain(PlayBufferSize,PlayThreadRunnable.sampleRatePlay,0.1245,0.25);
+		//short[] tmpSamples = stimuli.generateClickTrain();
+		//WhiteNoise stimuli = new WhiteNoise(PlayBufferSize,PlayThreadRunnable.sampleRatePlay);
+	    //short[] tmpSamples = stimuli.generateWhiteNoise();
+		Log.v(TAG,"Generate stimulus of length " + tmpSamples.length);
 		if(channelPLAYConfig == AudioFormat.CHANNEL_OUT_STEREO){
 			//Interleave the tracks for processing
 			for(int i=0;i<tmpSamples.length;i++){
-				if(i<(samples.length/2)){
 					samples[i]=tmpSamples[i];
 					samples[i+1]=tmpSamples[i];
-				}else{
-					samples[i]=0;
-					samples[i+1]=0;
-				}
-
 			}
-		}else {
+		}else if(channelPLAYConfig == AudioFormat.CHANNEL_OUT_MONO) {
 			//Mono channel
 			samples=tmpSamples;
+		}else {
+			Log.v(TAG,"Unexpected channel configuration: " + channelPLAYConfig);
 		}
 	}
 

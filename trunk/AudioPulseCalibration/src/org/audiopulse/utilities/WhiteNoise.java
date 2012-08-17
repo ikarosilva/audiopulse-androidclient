@@ -40,50 +40,30 @@
 package org.audiopulse.utilities;
 
 
-public class CalibrationTone {
+public class WhiteNoise {
 
-	private double[] f;
-	private double[] A; //returned Amplitudes are in intensity
-	private String device;
-	public static final double dBSPLRef= 0.00002; //20 micro Pascal is the physical reference
-	public static final double dBuRef= Math.sqrt(0.6); //20 micro Pascal is the physical reference
-	
-	//err=20*log10(data_rms/ref_rms);
-	public static enum device {
 
-		//For calibration of the ER10C we will use a 1 kHz
-		ER10C(250,Short.MAX_VALUE,"ER10C");
-		
-		//ER10C Specs
-		/*
-		private double sensitivity1kHzSPL=72; 
-		private double sensitivity1kHzVRMS=1; 
-		private double output0SPLtodBuV=0; 
-		*/
-		private double f;
-		private double A;	//Amplitudes are in dB
-		private String deviceName;
-		device(double f,double A, String deviceName) {
-			this.f=f;
-			this.A=1;//dBuRef*Math.pow(10,A/20); //Convert amplitude in dBu to intensity
-			this.deviceName=deviceName;
+	public static final String TAG="WhiteNoise";
+	public double clickDuration;
+	public short amplitude;
+	private short[] data;
+	public int N;
+	public double Fs; //Sampling frequency in Hz
+
+	public WhiteNoise(int N,double Fs){
+		//Duration variables are defined in terms of second
+		this.N=N;
+		this.Fs=Fs;
+		data=new short[N];
+		amplitude=Short.MAX_VALUE;
+	}
+
+	public short[] generateWhiteNoise(){
+		for( int i = 0; i < N; i++ )
+		{
+			data[i]=(short) (amplitude*Math.random());
 		}
+		return data;
 	}
 
-	public CalibrationTone(device caltone){
-		double[] f={caltone.f};
-		this.f=f;
-		double[] A= {caltone.A};
-		this.A=A;
-		device=caltone.deviceName;
-	}
-	public double[] getStimulusFrequency(){
-		return f;
-	}
-	public double[] getStimulusAmplitude(){
-		return A;
-	}
-	public String getProtocol(){
-		return device;
-	}
-}
+} //of Class definition

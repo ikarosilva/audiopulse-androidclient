@@ -39,51 +39,55 @@
 
 package org.audiopulse.utilities;
 
+import android.util.Log;
 
-public class CalibrationTone {
+public class ClickTrain {
 
-	private double[] f;
-	private double[] A; //returned Amplitudes are in intensity
-	private String device;
-	public static final double dBSPLRef= 0.00002; //20 micro Pascal is the physical reference
-	public static final double dBuRef= Math.sqrt(0.6); //20 micro Pascal is the physical reference
-	
-	//err=20*log10(data_rms/ref_rms);
-	public static enum device {
 
-		//For calibration of the ER10C we will use a 1 kHz
-		ER10C(250,Short.MAX_VALUE,"ER10C");
-		
-		//ER10C Specs
-		/*
-		private double sensitivity1kHzSPL=72; 
-		private double sensitivity1kHzVRMS=1; 
-		private double output0SPLtodBuV=0; 
-		*/
-		private double f;
-		private double A;	//Amplitudes are in dB
-		private String deviceName;
-		device(double f,double A, String deviceName) {
-			this.f=f;
-			this.A=1;//dBuRef*Math.pow(10,A/20); //Convert amplitude in dBu to intensity
-			this.deviceName=deviceName;
+	public static final String TAG="ClickTrain";
+	public double clickDuration;
+	public short amplitude;
+	public short baseline;
+	public double restDuration;
+	private short[] data;
+	public int N;
+	public double Fs; //Sampling frequency in Hz
+
+	public ClickTrain(int N,double Fs,double clickDuration, double restDuration){
+		//Duration variables are defined in terms of second
+		this.N=N;
+		this.Fs=Fs;
+		this.clickDuration=clickDuration;
+		this.restDuration=restDuration;
+		data=new short[N];
+		amplitude=Short.MAX_VALUE;
+		baseline=Short.MIN_VALUE;
+		Log.v(TAG,"Stimulus parameters: N=" + N + " Fs=" + Fs + " clickdur= " 
+				+ clickDuration + " restduration= " + restDuration);
+	}
+
+	public short[] generateClickTrain(){
+		int inClick=1; //Defined in terms of sample with positive values for clickDuration and negative for restDuration
+		for( int i = 0; i < N; i++ )
+		{
+			
+			if(inClick > 0){
+				//in click phase
+				data[i]=amplitude;
+				inClick++;
+				if(inClick > (clickDuration*Fs)){
+					inClick=-1;
+				}
+			} else if (inClick < 0){
+				//in rest phase
+				data[i]= baseline;
+				inClick--;
+				if((inClick*-1) > (restDuration*Fs)){
+					inClick=1;
+				}
+			}	
 		}
+		return data;
 	}
 
-	public CalibrationTone(device caltone){
-		double[] f={caltone.f};
-		this.f=f;
-		double[] A= {caltone.A};
-		this.A=A;
-		device=caltone.deviceName;
-	}
-	public double[] getStimulusFrequency(){
-		return f;
-	}
-	public double[] getStimulusAmplitude(){
-		return A;
-	}
-	public String getProtocol(){
-		return device;
-	}
-}
+} //of Class definition

@@ -49,6 +49,8 @@ import org.afree.data.xy.XYDataset;
 import org.afree.data.xy.XYSeries;
 import org.afree.data.xy.XYSeriesCollection;
 import org.afree.graphics.SolidColor;
+import org.audiopulse.io.PlayThreadRunnable;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
@@ -76,6 +78,10 @@ public class PlotWaveformView extends DemoView {
 		PlotWaveformView.N=N;
 		PlotWaveformView.samples=audioBuffer;
 		PlotWaveformView.recSampleRate=sampleRate;
+		//PlotWaveformView.N=PlayThreadRunnable.samples.length;
+		//PlotWaveformView.samples=PlayThreadRunnable.samples;
+		//PlotWaveformView.recSampleRate=PlayThreadRunnable.sampleRatePlay;
+		
 		final AFreeChart chart = createChart2();
 		setChart(chart);
 	}
