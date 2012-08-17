@@ -39,6 +39,8 @@
 
 package org.audiopulse.utilities;
 
+import org.audiopulse.graphics.SpectralWindows;
+
 import android.util.Log;
 
 public class PeriodicSeries {
@@ -50,6 +52,8 @@ public class PeriodicSeries {
 	private short[] data;
 	public int N;
 	public double Fs; //Sampling frequency in Hz
+	public double windowSize=0.3; //window size in seconds
+	public int windowN;
 
 	public PeriodicSeries(int N,double Fs,double[] frequency){
 		this.N=N;
@@ -60,6 +64,7 @@ public class PeriodicSeries {
 		for (int i=0;i<frequency.length;i++){
 			amplitude[i]=1; //Set default amplitudes in intensity
 		}
+		windowN=(int) (windowSize*Fs);
 	}
 	
 	//Constructor for Calibration signals
@@ -71,6 +76,7 @@ public class PeriodicSeries {
 		Log.v(TAG,"Generating calibration tone amplitude = " + amplitude[0] + " of length= " + amplitude.length);
 		//Log.v(TAG," f =" + frequency);
 		data=new short[N];
+		windowN=(int) (windowSize*Fs);
 	}
 		
 	//Constructor for DPOAE signals, which is a Periodic Series
@@ -80,6 +86,7 @@ public class PeriodicSeries {
 		frequency=dpoae.getStimulusFrequency();
 		amplitude=dpoae.getStimulusAmplitude();
 		data=new short[N];
+		windowN=(int) (windowSize*Fs);
 	}
 
 	public PeriodicSeries(int N,double Fs,double[] frequency,double[] amplitude){
@@ -88,6 +95,7 @@ public class PeriodicSeries {
 		this.frequency=frequency;
 		data=new short[N];
 		this.amplitude=amplitude; //Amplitudes are in intensity!!
+		windowN=(int) (windowSize*Fs);
 	}
 
 	public short[] generatePeriodicSeries(){
@@ -95,7 +103,9 @@ public class PeriodicSeries {
 		double tmpSample;
 		double PI2=2*Math.PI;
 		double normalizingFactor=0;
-		double[] increment= new double[frequency.length];;
+		double[] increment= new double[frequency.length];
+		int index;
+		int windowOffset0=N -1 - Math.round(windowN/2);
 		for (int i=0;i<frequency.length;i++){
 			increment[i] = PI2 * frequency[i] /Fs; // angular increment for each sample
 			normalizingFactor +=amplitude[i];
@@ -106,8 +116,19 @@ public class PeriodicSeries {
 			for( int k = 0; k < frequency.length; k++ )
 			{
 				tmpSample += amplitude[k]*Math.sin(increment[k]*i);
+				
+				
 			}
+			
+			//At onset/offset apply window in order to avoid non-linear distortions
+			if(i < (windowN/2 - 1) ){
+				tmpSample=tmpSample*SpectralWindows.hamming(i,windowN);
+			}else if(i > windowOffset0){
+				index=windowN/2 + i-windowOffset0;
+				tmpSample=tmpSample*SpectralWindows.hamming(index,windowN);
+			}		
 			data[i]=(short) (Short.MAX_VALUE*tmpSample/normalizingFactor);
+		
 		}
 		return data;
 	}

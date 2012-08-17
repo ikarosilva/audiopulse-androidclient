@@ -42,6 +42,8 @@ package org.audiopulse.graphics;
 public class SpectralWindows {
 
 	public static double hamming(int n, int N){
+		// assert that the absolute value is >= 0
+		assert ( n <= N ) : "Window sample: " + n + " is beyond expected window range: "+ N;
 		double out=0.54 - 0.46*Math.cos(2*Math.PI*(double)n/(N-1));
 		return out;	
 	}

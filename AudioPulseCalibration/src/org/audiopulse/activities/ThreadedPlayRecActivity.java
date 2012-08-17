@@ -65,8 +65,8 @@ public class ThreadedPlayRecActivity extends Activity
 	Handler recordStatusBackHandler = null;
 	Thread playThread = null;
 	Thread recordThread = null;
-	public static double playTime=1;
-	public static double playRecDelay=0.5; //Allow for playback to stay playing while recording finishes
+	public static double playTime=0.3;
+	public static double playRecDelay=0; //Allow for playback to stay playing while recording finishes
 	public Bundle audioResultsBundle;
 	ScheduledThreadPoolExecutor threadPool=new ScheduledThreadPoolExecutor(2);
 
@@ -137,8 +137,8 @@ public class ThreadedPlayRecActivity extends Activity
 
 		recordThread.setPriority(Thread.MAX_PRIORITY);
 		Log.v(TAG,"Executing thread pool");
-		execSvc.execute( playThread );
 		execSvc.execute( recordThread );
+		execSvc.execute( playThread );
 		execSvc.shutdown();
 
 	}
