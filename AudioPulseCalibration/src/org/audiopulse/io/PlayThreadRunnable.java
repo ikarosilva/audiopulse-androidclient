@@ -40,6 +40,7 @@
 package org.audiopulse.io;
 
 import org.audiopulse.utilities.CalibrationTone;
+import org.audiopulse.utilities.ClickTrain;
 import org.audiopulse.utilities.PeriodicSeries;
 import org.audiopulse.utilities.WhiteNoise;
 
@@ -131,8 +132,12 @@ public class PlayThreadRunnable implements Runnable
 			mPLAYAudioBufferSize =AudioTrack.getMinBufferSize(sampleRatePlay, channelPLAYConfig, audioPLAYFormat)*2;   
 			Log.v(TAG,"mPLAYAudioBufferSize ="+mPLAYAudioBufferSize);
 			mAudioPLAY = new AudioTrack(streamMode, sampleRatePlay, channelPLAYConfig, audioPLAYFormat, 
-					mPLAYAudioBufferSize,trackMode);   
-			mAudioPLAY.setStereoVolume(AudioTrack.getMaxVolume(),AudioTrack.getMaxVolume());
+					mPLAYAudioBufferSize,trackMode); 
+			assert ( mAudioPLAY.getChannelConfiguration() == channelPLAYConfig ) : "Incorrect channel configuration: " +
+					mAudioPLAY.getChannelConfiguration() + " expected: " + channelPLAYConfig ;
+			if(channelPLAYConfig == AudioFormat.CHANNEL_OUT_STEREO){
+				mAudioPLAY.setStereoVolume(AudioTrack.getMaxVolume()/2,AudioTrack.getMaxVolume()/2);
+			}
 			mAudioPLAY.setPlaybackRate(sampleRatePlay);
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();

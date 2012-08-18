@@ -52,7 +52,7 @@ public class CalibrationTone {
 	public static enum device {
 
 		//For calibration of the ER10C we will use a 1 kHz
-		ER10C(250,Short.MAX_VALUE,"ER10C");
+		ER10C(500,0.5,"ER10C");
 		
 		//ER10C Specs
 		/*
@@ -65,7 +65,7 @@ public class CalibrationTone {
 		private String deviceName;
 		device(double f,double A, String deviceName) {
 			this.f=f;
-			this.A=1;//dBuRef*Math.pow(10,A/20); //Convert amplitude in dBu to intensity
+			this.A=A;//dBuRef*Math.pow(10,A/20); //Convert amplitude in dBu to intensity
 			this.deviceName=deviceName;
 		}
 	}
