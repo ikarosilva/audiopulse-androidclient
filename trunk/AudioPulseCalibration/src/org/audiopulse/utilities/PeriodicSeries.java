@@ -72,7 +72,7 @@ public class PeriodicSeries {
 		this.N=N;
 		this.Fs=Fs;
 		frequency=caltone.getStimulusFrequency();
-		amplitude=caltone.getStimulusAmplitude();
+		amplitude=caltone.getStimulusAmplitude(); //in intensity relative to 1
 		Log.v(TAG,"Generating calibration tone amplitude = " + amplitude[0] + " of length= " + amplitude.length);
 		//Log.v(TAG," f =" + frequency);
 		data=new short[N];
@@ -102,13 +102,11 @@ public class PeriodicSeries {
 
 		double tmpSample;
 		double PI2=2*Math.PI;
-		double normalizingFactor=0;
 		double[] increment= new double[frequency.length];
 		int index;
 		int windowOffset0=N -1 - Math.round(windowN/2);
 		for (int i=0;i<frequency.length;i++){
 			increment[i] = PI2 * frequency[i] /Fs; // angular increment for each sample
-			normalizingFactor +=amplitude[i];
 		}
 		for( int i = 0; i < N; i++ )
 		{
@@ -116,8 +114,6 @@ public class PeriodicSeries {
 			for( int k = 0; k < frequency.length; k++ )
 			{
 				tmpSample += amplitude[k]*Math.sin(increment[k]*i);
-				
-				
 			}
 			
 			//At onset/offset apply window in order to avoid non-linear distortions
@@ -126,8 +122,8 @@ public class PeriodicSeries {
 			}else if(i > windowOffset0){
 				index=windowN/2 + i-windowOffset0;
 				tmpSample=tmpSample*SpectralWindows.hamming(index,windowN);
-			}		
-			data[i]=(short) (Short.MAX_VALUE*tmpSample/normalizingFactor);
+			}	
+			data[i]=(short) ((Short.MAX_VALUE-1)*tmpSample);
 		
 		}
 		return data;

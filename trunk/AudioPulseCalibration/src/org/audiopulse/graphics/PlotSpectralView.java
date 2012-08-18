@@ -53,6 +53,8 @@ import org.apache.commons.math3.complex.Complex;
 import org.apache.commons.math3.transform.DftNormalization;
 import org.apache.commons.math3.transform.FastFourierTransformer;
 import org.apache.commons.math3.transform.TransformType;
+import org.audiopulse.io.PlayThreadRunnable;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
@@ -73,7 +75,7 @@ public class PlotSpectralView extends DemoView {
 	private static long N;
 	private static short[] audioBuffer;
 	private static float sampleRate;
-	private static final int maxFreq=4100;
+	private static final int maxFreq=4000;
 	
 	public PlotSpectralView(Context context, long N, short[] audioBuffer2, float sampleRate) {
 		super(context);
@@ -81,7 +83,11 @@ public class PlotSpectralView extends DemoView {
 		PlotSpectralView.audioBuffer=audioBuffer2;
 		PlotSpectralView.sampleRate=sampleRate;
 		
-		Log.v(TAG,"N= " + " sampleRate= " + sampleRate);
+		//PlotSpectralView.N=PlayThreadRunnable.samples.length;
+		//PlotSpectralView.audioBuffer=PlayThreadRunnable.samples;
+		//PlotSpectralView.sampleRate=PlayThreadRunnable.sampleRatePlay;
+				
+		Log.v(TAG,"Constructor: N= " + N +  " sampleRate= " + sampleRate );
 		
 		final AFreeChart chart = createChart2();
 		setChart(chart);
@@ -93,9 +99,9 @@ public class PlotSpectralView extends DemoView {
 
         	//Calculate the size of averaged waveform
         	//based on the maximum desired frequency for FFT analysis
-        	double fres= (double) sampleRate/N;
-        	int SPEC_N=(int) (maxFreq/fres); 
+        	int SPEC_N=(int) N;//(N*maxFreq/sampleRate ); 
         	SPEC_N=(int) Math.pow(2,Math.round(Math.log(SPEC_N)/Math.log(2)));
+        	double fres= (double) sampleRate/SPEC_N;
         	double[] winData=new double[SPEC_N];
         	Complex[] tmpFFT=new Complex[SPEC_N];
     		double[] Pxx = new double[SPEC_N];
@@ -106,7 +112,7 @@ public class PlotSpectralView extends DemoView {
         	//http://www.mathworks.com/support/tech-notes/1700/1702.html
     		
     		//Perform windowing and averaging on the power spectrum
-    		Log.v(TAG,"Windowing and averagin signal with SPEC_N= " + SPEC_N);
+    		Log.v(TAG,"SPEC_N= " + SPEC_N + " fres= " + fres+ " N=" +N);
         	for (int i=0; i < N; i++){
         		if(i*SPEC_N+SPEC_N > N)
         			break;
@@ -118,7 +124,7 @@ public class PlotSpectralView extends DemoView {
         		for(int k=0;k<(SPEC_N/2);k++){
         			tmpPxx = tmpFFT[k].abs()/(double)SPEC_N;
         			tmpPxx*=tmpPxx; //Not accurate for the DC & Nyquist, but we are not using it!
-        			Pxx[k]=( (k*Pxx[k]) + tmpPxx )/((double) k+1);
+        			Pxx[k]=( (i*Pxx[k]) + tmpPxx )/((double) i+1);
         		}
      		}
     		for(int k=0;k<(SPEC_N/2);k++){
