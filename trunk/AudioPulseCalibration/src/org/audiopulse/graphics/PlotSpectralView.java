@@ -87,7 +87,7 @@ public class PlotSpectralView extends DemoView {
 		//PlotSpectralView.audioBuffer=PlayThreadRunnable.samples;
 		//PlotSpectralView.sampleRate=PlayThreadRunnable.sampleRatePlay;
 				
-		Log.v(TAG,"Constructor: N= " + N +  " sampleRate= " + sampleRate );
+		//Log.v(TAG,"Constructor: N= " + N +  " sampleRate= " + sampleRate );
 		
 		final AFreeChart chart = createChart2();
 		setChart(chart);

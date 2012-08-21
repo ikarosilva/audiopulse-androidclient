@@ -53,17 +53,17 @@ import android.util.Log;
 
 public class PlayThreadRunnable implements Runnable
 {
+	public static String TAG = "PlayThreadRunnable";
 	private int mPLAYAudioBufferSize;
 	private AudioTrack mAudioPLAY;
-	int channelPLAYConfig = AudioFormat.CHANNEL_OUT_MONO;
+	int channelPLAYConfig = AudioFormat.CHANNEL_OUT_STEREO;
 	int audioPLAYFormat = AudioFormat.ENCODING_PCM_16BIT;
-	int streamMode= AudioManager.STREAM_MUSIC;
-	int trackMode=AudioTrack.MODE_STREAM;
+	int audioMode= AudioManager.STREAM_MUSIC;
+	int trackMode=AudioTrack.MODE_STATIC;
 	public final static int sampleRatePlay=8000;
 	int PlayBufferSize;
-	public static short[] samples;
+	short[] samples;
 	Handler mainThreadHandler = null;
-	public static String TAG = "PlayThreadRunnable";
 	private long play_time;
 
 
@@ -127,11 +127,9 @@ public class PlayThreadRunnable implements Runnable
 
 
 	private void initPlayTrack(){
-		Log.v(TAG,"Initializing playback track");
 		try {
 			mPLAYAudioBufferSize =AudioTrack.getMinBufferSize(sampleRatePlay, channelPLAYConfig, audioPLAYFormat)*2;   
-			Log.v(TAG,"mPLAYAudioBufferSize ="+mPLAYAudioBufferSize);
-			mAudioPLAY = new AudioTrack(streamMode, sampleRatePlay, channelPLAYConfig, audioPLAYFormat, 
+			mAudioPLAY = new AudioTrack(audioMode, sampleRatePlay, channelPLAYConfig, audioPLAYFormat, 
 					mPLAYAudioBufferSize,trackMode); 
 			assert ( mAudioPLAY.getChannelConfiguration() == channelPLAYConfig ) : "Incorrect channel configuration: " +
 					mAudioPLAY.getChannelConfiguration() + " expected: " + channelPLAYConfig ;
@@ -142,10 +140,8 @@ public class PlayThreadRunnable implements Runnable
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		}	
-		Log.v(TAG,"Channel count is:" + mAudioPLAY.getChannelCount());
-		Log.v(TAG,"Fs count is:" + mAudioPLAY.getPlaybackRate());
-		Log.v(TAG,"Coding:" + mAudioPLAY.getAudioFormat());
-		Log.v(TAG,"Fs count is:" + mAudioPLAY.getSampleRate());
+		Log.v(TAG,"Ch count= " + mAudioPLAY.getChannelCount() + " Play Fs= " + mAudioPLAY.getPlaybackRate() +
+				" Coding= " + mAudioPLAY.getAudioFormat() + " Fs= " + mAudioPLAY.getSampleRate());
 		
 		if(mAudioPLAY.getState() != AudioTrack.STATE_INITIALIZED) {
 			informMiddle("Error: Audio record was not properly initialized!!");
@@ -155,15 +151,15 @@ public class PlayThreadRunnable implements Runnable
 
 
 	private void generateStimulus(){
-		Log.v(TAG,"generating stimulus of length = " + (long) PlayBufferSize/PlayThreadRunnable.sampleRatePlay + " seconds");
+		Log.v(TAG,"generating stimulus of length = " + (double) PlayBufferSize/sampleRatePlay + " seconds with samples= " + PlayBufferSize);
 		CalibrationTone caltone = new CalibrationTone(CalibrationTone.device.ER10C);
-		PeriodicSeries stimuli=new PeriodicSeries(PlayBufferSize, PlayThreadRunnable.sampleRatePlay,caltone);
+		PeriodicSeries stimuli=new PeriodicSeries(PlayBufferSize,sampleRatePlay,caltone);
 		short[] tmpSamples = stimuli.generatePeriodicSeries();
-		//ClickTrain stimuli = new ClickTrain(PlayBufferSize,PlayThreadRunnable.sampleRatePlay,0.1245,0.25);
+		//ClickTrain stimuli = new ClickTrain(PlayBufferSize,PlayThreadRunnable.sampleRatePlay,0.1,0.2);
 		//short[] tmpSamples = stimuli.generateClickTrain();
 		//WhiteNoise stimuli = new WhiteNoise(PlayBufferSize,PlayThreadRunnable.sampleRatePlay);
 	    //short[] tmpSamples = stimuli.generateWhiteNoise();
-		Log.v(TAG,"Generate stimulus of length " + tmpSamples.length);
+		Log.v(TAG,"Generate stimulus of length " + tmpSamples.length + " ,seconds= " + tmpSamples.length/(double) sampleRatePlay);
 		if(channelPLAYConfig == AudioFormat.CHANNEL_OUT_STEREO){
 			//Interleave the tracks for processing
 			for(int i=0;i<tmpSamples.length;i++){
@@ -187,7 +183,7 @@ public class PlayThreadRunnable implements Runnable
 		int nWrite=1;
 		int total=0;
 		Log.v(TAG,"frame size is: " + frameSize + " card size is: " + mPLAYAudioBufferSize+ " play time is: " + PlayBufferSize);
-		Log.v(TAG, "dataleft to play: " + dataLeft);
+		Log.v(TAG, "samples.length= " + samples.length + " frameSize=" + frameSize );
 		mAudioPLAY.play();
 		long st = System.currentTimeMillis();
 		while(dataLeft>0){

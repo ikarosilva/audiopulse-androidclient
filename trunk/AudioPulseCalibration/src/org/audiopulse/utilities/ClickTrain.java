@@ -60,8 +60,8 @@ public class ClickTrain {
 		this.clickDuration=clickDuration;
 		this.restDuration=restDuration;
 		data=new short[N];
-		amplitude=Short.MAX_VALUE;
-		baseline=Short.MIN_VALUE;
+		amplitude=Short.MAX_VALUE/2;
+		baseline=Short.MIN_VALUE/2;
 		Log.v(TAG,"Stimulus parameters: N=" + N + " Fs=" + Fs + " clickdur= " 
 				+ clickDuration + " restduration= " + restDuration);
 	}
@@ -69,18 +69,18 @@ public class ClickTrain {
 	public short[] generateClickTrain(){
 		int inClick=1; //Defined in terms of sample with positive values for clickDuration and negative for restDuration
 		for( int i = 0; i < N; i++ )
-		{
-			
+		{		
 			if(inClick > 0){
 				//in click phase
-				data[i]=amplitude;
+				//data[i]= (short) (Math.random()*amplitude/100 + amplitude);
+				data[i]= (short) (amplitude*Math.sin(2*Math.PI * 1000/Fs*i)/10);
 				inClick++;
 				if(inClick > (clickDuration*Fs)){
 					inClick=-1;
 				}
 			} else if (inClick < 0){
 				//in rest phase
-				data[i]= baseline;
+				data[i]=baseline;
 				inClick--;
 				if((inClick*-1) > (restDuration*Fs)){
 					inClick=1;
